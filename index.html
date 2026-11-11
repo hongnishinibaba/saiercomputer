@@ -152,7 +152,7 @@ main{
 
 .group-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(118px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(calc(118px * var(--is,1)),1fr));
   gap:11px;
 }
 
@@ -261,10 +261,11 @@ main.duo .card .cost-input{top:4px;right:4px;width:52px;height:22px;font-size:11
 .pool-locked .card{opacity:.42;filter:grayscale(.55);cursor:not-allowed;}
 .pool-locked .card.sel-p1,.pool-locked .card.sel-p2{opacity:1;filter:none;}
 
-/* ---------- 图标（池内 100×100） ---------- */
+/* ---------- 图标（随 --is 缩放） ---------- */
 .icon-wrap{
   position:relative;
-  width:100px;height:100px;
+  width:calc(100px * var(--is,1));
+  height:calc(100px * var(--is,1));
   flex:0 0 auto;
   border-radius:12px;
   overflow:hidden;
@@ -276,13 +277,15 @@ main.duo .card .cost-input{top:4px;right:4px;width:52px;height:22px;font-size:11
   content:attr(data-initial);
   position:absolute;left:50%;top:50%;
   transform:translate(-50%,-50%);
-  font-size:34px;font-weight:700;
+  font-size:calc(34px * var(--is,1));
+  font-weight:700;
   color:rgba(140,190,255,.35);
   pointer-events:none;
 }
 .icon-wrap img{
   position:relative;z-index:1;
-  width:100px;height:100px;
+  width:calc(100px * var(--is,1));
+  height:calc(100px * var(--is,1));
   object-fit:contain;
   display:block;
 }
@@ -325,9 +328,16 @@ main.duo .card .cost-input{top:4px;right:4px;width:52px;height:22px;font-size:11
   border-radius:inherit;
 }
 
-.slot .icon-wrap{width:64px;height:64px;border-radius:10px;}
-.slot .icon-wrap img{width:64px;height:64px;}
-.slot .icon-wrap::after{font-size:22px;}
+.slot .icon-wrap{
+  width:calc(64px * var(--is,1));
+  height:calc(64px * var(--is,1));
+  border-radius:10px;
+}
+.slot .icon-wrap img{
+  width:calc(64px * var(--is,1));
+  height:calc(64px * var(--is,1));
+}
+.slot .icon-wrap::after{font-size:calc(22px * var(--is,1));}
 
 .slot .name{
   font-size:12px;color:#cfe3ff;max-width:100%;
@@ -600,14 +610,21 @@ main.duo .group-head{padding:0 2px 5px;margin-bottom:8px;gap:8px;}
 main.duo .group-badge{min-width:40px;height:19px;padding:0 8px;font-size:11.5px;border-radius:7px;}
 main.duo .group-count{font-size:11px;}
 main.duo .group-grid{
-  grid-template-columns:repeat(auto-fill,minmax(78px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(calc(78px * var(--is,1)),1fr));
   gap:8px;
 }
 main.duo .card{padding:6px 4px 6px;border-radius:10px;gap:4px;}
 main.duo .card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(60,160,255,.22);}
-main.duo .icon-wrap{width:62px;height:62px;border-radius:9px;}
-main.duo .icon-wrap img{width:62px;height:62px;}
-main.duo .icon-wrap::after{font-size:23px;}
+main.duo .icon-wrap{
+  width:calc(62px * var(--is,1));
+  height:calc(62px * var(--is,1));
+  border-radius:9px;
+}
+main.duo .icon-wrap img{
+  width:calc(62px * var(--is,1));
+  height:calc(62px * var(--is,1));
+}
+main.duo .icon-wrap::after{font-size:calc(23px * var(--is,1));}
 main.duo .card .name{font-size:10.5px;line-height:1.2;}
 main.duo .card .cost{
   top:4px;right:4px;min-width:20px;height:18px;padding:0 5px;
@@ -678,9 +695,16 @@ main.duo .card .tag-p2{top:21px;}
 
 .duo-slots{grid-template-rows:none;grid-auto-rows:auto;gap:8px;}
 .duo-slots .slot{min-height:86px;padding:7px 5px 6px;}
-.duo-slots .slot .icon-wrap{width:52px;height:52px;border-radius:9px;}
-.duo-slots .slot .icon-wrap img{width:52px;height:52px;}
-.duo-slots .slot .icon-wrap::after{font-size:18px;}
+.duo-slots .slot .icon-wrap{
+  width:calc(52px * var(--is,1));
+  height:calc(52px * var(--is,1));
+  border-radius:9px;
+}
+.duo-slots .slot .icon-wrap img{
+  width:calc(52px * var(--is,1));
+  height:calc(52px * var(--is,1));
+}
+.duo-slots .slot .icon-wrap::after{font-size:calc(18px * var(--is,1));}
 .duo-slots .slot .name{font-size:11px;}
 .duo-slots .slot.filled{background:linear-gradient(160deg, rgba(22,58,80,.6), rgba(8,22,40,.75));}
 #p2Panel .duo-slots .slot.filled{
@@ -804,11 +828,63 @@ main.duo .card .tag-p2{top:21px;}
   color:#c8fff4;
   box-shadow:0 0 26px rgba(95,240,208,.4);
 }
+
+/* ============ ★ 图标缩放（右上角按钮控制） ============ */
+:root{ --is:1; }              /* 图标缩放系数，1 = 100% */
+
+/* 右上角悬浮控制条 */
+.icon-zoom{
+  position:fixed;top:12px;right:12px;z-index:40;
+  display:flex;align-items:center;gap:4px;
+  padding:5px 6px;border-radius:99px;
+  background:rgba(10,20,45,.8);
+  border:1px solid rgba(110,170,255,.32);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  box-shadow:0 0 22px rgba(40,90,200,.3);
+}
+.icon-zoom button{
+  flex:0 0 auto;
+  width:28px;height:28px;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;cursor:pointer;
+  font-family:inherit;font-size:15px;font-weight:700;line-height:1;
+  color:#bfe0ff;
+  background:rgba(20,45,90,.7);
+  border:1px solid rgba(110,170,255,.35);
+  transition:.18s;
+}
+.icon-zoom button:hover:not(:disabled){
+  border-color:#5ff0d0;color:#fff;
+  background:rgba(35,80,150,.85);
+  box-shadow:0 0 14px rgba(95,240,208,.35);
+}
+.icon-zoom button:active:not(:disabled){transform:scale(.92);}
+.icon-zoom button:disabled{opacity:.3;cursor:not-allowed;}
+#iconZoomVal{
+  min-width:46px;text-align:center;
+  font-size:12px;letter-spacing:1px;color:#9fd4ff;
+  cursor:pointer;user-select:none;transition:.18s;
+}
+#iconZoomVal:hover{color:#5ff0d0;text-shadow:0 0 10px rgba(95,240,208,.7);}
+
+@media (max-width:520px){
+  .icon-zoom{top:8px;right:8px;padding:4px 5px;}
+  .icon-zoom button{width:25px;height:25px;font-size:13px;}
+  #iconZoomVal{min-width:40px;font-size:11px;}
+}
 </style>
 </head>
 <body>
 
 <canvas id="stars"></canvas>
+
+<!-- ★ 图标缩放控制（页面右上角） -->
+<div class="icon-zoom" id="iconZoom">
+  <button id="iconZoomOut" type="button" title="缩小精灵图标" aria-label="缩小精灵图标">−</button>
+  <span id="iconZoomVal" title="点击恢复 100%">100%</span>
+  <button id="iconZoomIn" type="button" title="放大精灵图标" aria-label="放大精灵图标">＋</button>
+</div>
 
 <header>
   <h1>精灵费用计算器</h1>
@@ -1044,6 +1120,8 @@ main.duo .card .tag-p2{top:21px;}
 阿克西亚	6
 艾斯菲亚	6
 卡尔加斯   6
+提亚斯      6
+亚梅丝      6
 
 
 `;
@@ -1273,7 +1351,7 @@ main.duo .card .tag-p2{top:21px;}
           img.style.display = 'none';
           console.warn('[图标加载失败] ' + name + ' —— 已尝试 ' + paths.length + ' 个路径，例如：', paths[0]);
           if(iconFailCount === 3){
-            setStatus('部分图标未能加载，请检查：① icon 文件夹是否与网页同级 ② 图片名是否与表格中的精灵名完全一致 ③ 浏览器控制台(F12)可看到具体尝试路径。', 'err');
+          //  setStatus('部分图标未能加载，请检查：① icon 文件夹是否与网页同级 ② 图片名是否与表格中的精灵名完全一致 ③ 浏览器控制台(F12)可看到具体尝试路径。', 'err');
           }
         }
         return;
@@ -2918,6 +2996,56 @@ main.duo .card .tag-p2{top:21px;}
 
   diceBtn.addEventListener('click', rollDice);
 
+  /* ================= ★ 图标缩放（右上角按钮） ================= */
+  const ICON_ZOOM_MIN  = 60;    // 最小 60%
+  const ICON_ZOOM_MAX  = 200;   // 最大 200%
+  const ICON_ZOOM_STEP = 10;    // 每次 ±10%
+  const ICON_ZOOM_KEY  = 'petIconScalePct';
+
+  function initIconZoom(){
+    const outBtn = document.getElementById('iconZoomOut');
+    const inBtn  = document.getElementById('iconZoomIn');
+    const valEl  = document.getElementById('iconZoomVal');
+    if(!outBtn || !inBtn || !valEl) return;
+
+    let pct = 100;
+    try{
+      const v = parseInt(localStorage.getItem(ICON_ZOOM_KEY), 10);
+      if(isFinite(v)) pct = v;
+    }catch(e){}
+    pct = Math.min(ICON_ZOOM_MAX, Math.max(ICON_ZOOM_MIN,
+          Math.round(pct / ICON_ZOOM_STEP) * ICON_ZOOM_STEP));
+
+    function apply(){
+      document.documentElement.style.setProperty('--is', String(pct / 100));
+      valEl.textContent = pct + '%';
+      outBtn.disabled = (pct <= ICON_ZOOM_MIN);
+      inBtn.disabled  = (pct >= ICON_ZOOM_MAX);
+      try{ localStorage.setItem(ICON_ZOOM_KEY, String(pct)); }catch(e){}
+    }
+
+    function setPct(v){
+      const n = Math.min(ICON_ZOOM_MAX, Math.max(ICON_ZOOM_MIN,
+                Math.round(v / ICON_ZOOM_STEP) * ICON_ZOOM_STEP));
+      if(n === pct) return;
+      pct = n;
+      apply();
+    }
+
+    outBtn.addEventListener('click', function(){ setPct(pct - ICON_ZOOM_STEP); });
+    inBtn.addEventListener('click',  function(){ setPct(pct + ICON_ZOOM_STEP); });
+
+    /* 点击百分比数字 → 一键恢复 100% */
+    valEl.addEventListener('click', function(){
+      if(pct === 100) return;
+      pct = 100;
+      apply();
+      toast('图标大小已恢复 100%', true);
+    });
+
+    apply();
+  }
+
   /* ================= 数据装载 ================= */
   function commitList(list, statusMsg, statusType){
     /* ★ 确保 0 费可重复精灵「暗雷」始终存在 */
@@ -2952,8 +3080,8 @@ main.duo .card .tag-p2{top:21px;}
 
     commitList(
       list,
-      '未能自动读取 ' + XLSX_FILE + '，已载入内置默认精灵数据（' + list.length + ' 只）。图标将从 icon/ 文件夹按精灵名自动匹配。',
-      'ok'
+     // '未能自动读取 ' + XLSX_FILE + '，已载入内置默认精灵数据（' + list.length + ' 只）。图标将从 icon/ 文件夹按精灵名自动匹配。',
+      //'ok'
     );
   }
 
@@ -3105,6 +3233,9 @@ main.duo .card .tag-p2{top:21px;}
       h2.title = '点击修改玩家名称';
       h2.addEventListener('click', function(){ openNameEditor(pi); });
     });
+
+    /* ★ 初始化右上角图标缩放按钮 */
+    initIconZoom();
 
     maxCostInput.value = maxCost;
     maxCostDisplay.textContent = maxCost;
