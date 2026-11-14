@@ -830,7 +830,7 @@ main.duo .card .tag-p2{top:21px;}
 }
 
 /* ============ ★ 图标缩放（右上角按钮控制） ============ */
-:root{ --is:1; }              /* 图标缩放系数，1 = 100% */
+:root{ --is:1; }
 
 /* 右上角悬浮控制条 */
 .icon-zoom{
@@ -905,18 +905,21 @@ main.duo .card .tag-p2{top:21px;}
   box-shadow:0 0 20px rgba(180,130,255,.4);
 }
 
-/* ---------- 旋转容器：整体布局 ---------- */
+/* ---------- 旋转容器：占满整个横屏空间 ---------- */
 body.rotate{
   overflow:hidden;
   padding-bottom:0;
   background-attachment:scroll;
 }
 
+/* ★ 横屏模式隐藏底栏（双人模式 / 导出 / 骰子 / 提示语等全部隐藏） */
+body.rotate footer{display:none !important;}
+
 body.rotate #rotWrap{
   position:fixed;
   top:0;left:0;
-  width:calc(100vh - var(--foot-h,56px));
-  width:calc(100dvh - var(--foot-h,56px));
+  width:100vh;
+  width:100dvh;
   height:100vw;
   height:100dvw;
   transform-origin:top left;
@@ -936,28 +939,27 @@ body.rotate header{
 body.rotate header h1{font-size:16px;letter-spacing:3px;}
 body.rotate header p{margin:2px 0 0;font-size:10px;letter-spacing:1px;}
 
-/* 主区域：flex 撑满剩余高度 */
+/* ★ 主区域：精灵池占 2/3，阵容占 1/3 */
 body.rotate main{
   flex:1 1 auto;
   min-height:0;
-  padding:6px 10px 8px;
-  gap:10px;
-  grid-template-columns:minmax(0,1fr) 272px;
+  padding:6px 8px 8px;
+  gap:8px;
+  grid-template-columns:minmax(0,2fr) minmax(0,1fr);
   grid-template-rows:minmax(0,1fr);
   align-items:stretch;
   overflow:hidden;
 }
+
+/* ★ 双人模式：池子 2/3，右侧 1/3 上下分给两名玩家 */
 body.rotate main.duo{
-  grid-template-columns:230px minmax(0,1fr) 230px;
-  grid-template-rows:auto minmax(0,1fr);
+  grid-template-columns:minmax(0,2fr) minmax(0,1fr);
+  grid-template-rows:auto minmax(0,1fr) minmax(0,1fr);
 }
-body.rotate main.duo #duoBar{
-  grid-column:1 / -1;
-  grid-row:1;
-}
-body.rotate main.duo #p1Panel{grid-column:1;grid-row:2;}
-body.rotate main.duo #poolPanel{grid-column:2;grid-row:2;}
-body.rotate main.duo #p2Panel{grid-column:3;grid-row:2;}
+body.rotate main.duo #duoBar{grid-column:1 / -1;grid-row:1;}
+body.rotate main.duo #poolPanel{grid-column:1;grid-row:2 / span 2;}
+body.rotate main.duo #p1Panel{grid-column:2;grid-row:2;}
+body.rotate main.duo #p2Panel{grid-column:2;grid-row:3;}
 
 /* 面板：纵向 flex，内容自适应 */
 body.rotate .panel{
@@ -997,7 +999,7 @@ body.rotate #poolPanel .status{
   overflow:hidden;
 }
 
-/* 分组与卡片紧凑化 */
+/* 分组与卡片紧凑化（池子更宽，列数自适应） */
 body.rotate .cost-group{margin-bottom:8px;}
 body.rotate .cost-group:last-child{margin-bottom:2px;}
 body.rotate .group-head{
@@ -1008,19 +1010,19 @@ body.rotate .group-badge{
 }
 body.rotate .group-count{font-size:10px;}
 body.rotate .group-grid{
-  grid-template-columns:repeat(auto-fill,minmax(calc(64px * var(--is,1)),1fr));
+  grid-template-columns:repeat(auto-fill,minmax(calc(66px * var(--is,1)),1fr));
   gap:7px;
 }
 body.rotate .card{padding:5px 3px 5px;border-radius:9px;gap:3px;}
 body.rotate .card:hover{transform:translateY(-1px);}
 body.rotate .icon-wrap{
-  width:calc(52px * var(--is,1));
-  height:calc(52px * var(--is,1));
+  width:calc(54px * var(--is,1));
+  height:calc(54px * var(--is,1));
   border-radius:8px;
 }
 body.rotate .icon-wrap img{
-  width:calc(52px * var(--is,1));
-  height:calc(52px * var(--is,1));
+  width:calc(54px * var(--is,1));
+  height:calc(54px * var(--is,1));
 }
 body.rotate .icon-wrap::after{font-size:calc(20px * var(--is,1));}
 body.rotate .card .name{font-size:9.5px;line-height:1.15;}
@@ -1043,8 +1045,10 @@ body.rotate .card .tag-p2{
 body.rotate .card .tag-p1{top:3px;}
 body.rotate .card .tag-p2{top:18px;}
 
-/* 单人阵容：3 列 2 行 */
-body.rotate #soloPanel{overflow:hidden;}
+/* ★ 单人阵容：占 1/3 宽，纵向滚动防溢出 */
+body.rotate #soloPanel{
+  overflow:hidden;
+}
 body.rotate #soloPanel .slots{
   grid-template-columns:repeat(3,1fr);
   grid-template-rows:repeat(2,auto);
@@ -1105,31 +1109,31 @@ body.rotate main.duo #p2Panel{
 body.rotate .duo-slots{
   grid-template-columns:repeat(3,1fr);
   grid-auto-rows:auto;
-  gap:5px;
+  gap:4px;
   flex:1 1 auto;
   min-height:0;
   overflow-y:auto;
 }
 body.rotate .duo-slots .slot{
-  min-height:62px;
+  min-height:52px;
   padding:3px 2px 3px;
 }
 body.rotate .duo-slots .slot .icon-wrap{
-  width:calc(34px * var(--is,1));
-  height:calc(34px * var(--is,1));
+  width:calc(30px * var(--is,1));
+  height:calc(30px * var(--is,1));
   border-radius:6px;
 }
 body.rotate .duo-slots .slot .icon-wrap img{
-  width:calc(34px * var(--is,1));
-  height:calc(34px * var(--is,1));
+  width:calc(30px * var(--is,1));
+  height:calc(30px * var(--is,1));
 }
-body.rotate .duo-slots .slot .icon-wrap::after{font-size:calc(12px * var(--is,1));}
-body.rotate .duo-slots .slot .name{font-size:8.5px;}
+body.rotate .duo-slots .slot .icon-wrap::after{font-size:calc(11px * var(--is,1));}
+body.rotate .duo-slots .slot .name{font-size:8px;}
 body.rotate .duo-slots .slot .cost{
-  min-width:15px;height:13px;padding:0 3px;font-size:8px;border-radius:4px;
+  min-width:14px;height:12px;padding:0 3px;font-size:7.5px;border-radius:4px;
 }
-body.rotate .duo-slots .slot .ban-mark::before{width:22px;height:22px;border-width:3px;}
-body.rotate .duo-slots .slot .ban-mark::after{width:30px;height:3px;}
+body.rotate .duo-slots .slot .ban-mark::before{width:20px;height:20px;border-width:3px;}
+body.rotate .duo-slots .slot .ban-mark::after{width:26px;height:3px;}
 
 /* ---------- 旋转模式下锁定交互（防止误触） ---------- */
 body.rotate .card .cost{pointer-events:none;}
@@ -1196,22 +1200,28 @@ body.rotate.rot-sm .icon-wrap img{
   width:calc(46px * var(--is,1));
   height:calc(46px * var(--is,1));
 }
-body.rotate.rot-sm main.duo{grid-template-columns:200px minmax(0,1fr) 200px;}
+body.rotate.rot-sm #soloPanel .slots{
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(3,auto);
+}
 
 /* ---------- 极窄横屏（视觉高 < 360） ---------- */
-body.rotate.rot-tiny main{padding:4px 8px 6px;gap:8px;}
+body.rotate.rot-tiny main{padding:4px 6px 6px;gap:6px;}
 body.rotate.rot-tiny header{padding:4px 12px 2px;}
 body.rotate.rot-tiny header h1{font-size:13px;}
 body.rotate.rot-tiny header p{display:none;}
 body.rotate.rot-tiny .slot{min-height:62px;}
-body.rotate.rot-tiny .duo-slots .slot{min-height:56px;}
+body.rotate.rot-tiny .duo-slots .slot{min-height:48px;}
 body.rotate.rot-tiny .total-row b{font-size:16px;}
-body.rotate.rot-tiny main.duo{grid-template-columns:1fr 1fr;}
+body.rotate.rot-tiny #soloPanel .slots{
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(3,auto);
+}
+body.rotate.rot-tiny main.duo{grid-template-columns:minmax(0,2fr) minmax(0,1fr);}
 body.rotate.rot-tiny main.duo #duoBar{grid-column:1 / -1;grid-row:1;}
-body.rotate.rot-tiny main.duo #poolPanel{grid-column:1 / -1;grid-row:2;}
-body.rotate.rot-tiny main.duo #p1Panel{grid-column:1;grid-row:3;}
+body.rotate.rot-tiny main.duo #poolPanel{grid-column:1;grid-row:2 / span 2;}
+body.rotate.rot-tiny main.duo #p1Panel{grid-column:2;grid-row:2;}
 body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
-body.rotate.rot-tiny main.duo .pool-scroll{max-height:32vw;}
 
 @media (max-width:520px){
   #mobileBtn{top:8px;left:8px;padding:6px 12px;font-size:11.5px;}
@@ -3351,8 +3361,8 @@ body.rotate.rot-tiny main.duo .pool-scroll{max-height:32vw;}
   let mobileMode = false;
 
   function syncFootHeight(){
-    const h = footerEl ? footerEl.offsetHeight : 56;
-    document.documentElement.style.setProperty('--foot-h', (h || 56) + 'px');
+    const h = footerEl ? footerEl.offsetHeight : 0;
+    document.documentElement.style.setProperty('--foot-h', (h || 0) + 'px');
   }
 
   /* 根据旋转后的实际尺寸自适应（兼容不同比例的手机） */
@@ -3361,11 +3371,11 @@ body.rotate.rot-tiny main.duo .pool-scroll{max-height:32vw;}
       document.body.classList.remove('rot-sm', 'rot-tiny');
       return;
     }
-    const vh = window.innerHeight;                       // 屏幕 CSS 高
-    const vw = window.innerWidth;                        // 屏幕 CSS 宽
-    const footH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--foot-h')) || 56;
-    const visW = vh - footH;                             // 横屏视觉宽度
-    const visH = vw;                                     // 横屏视觉高度
+    const vh = window.innerHeight;
+    const vw = window.innerWidth;
+    const footH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--foot-h')) || 0;
+    const visW = vh - footH;
+    const visH = vw;
     document.body.classList.toggle('rot-sm', visW < 700);
     document.body.classList.toggle('rot-tiny', visH < 360);
   }
@@ -3386,7 +3396,7 @@ body.rotate.rot-tiny main.duo .pool-scroll{max-height:32vw;}
     window.scrollTo(0, 0);
 
     toast(on
-      ? '已切换为手机横屏模式（已锁定费用 / 玩家名编辑）'
+      ? '已切换为手机横屏模式（底栏已隐藏 · 已锁定费用 / 玩家名编辑）'
       : '已退出手机横屏模式', true);
   }
 
