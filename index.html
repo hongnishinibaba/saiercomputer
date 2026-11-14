@@ -905,75 +905,313 @@ main.duo .card .tag-p2{top:21px;}
   box-shadow:0 0 20px rgba(180,130,255,.4);
 }
 
+/* ---------- 旋转容器：整体布局 ---------- */
 body.rotate{
   overflow:hidden;
   padding-bottom:0;
   background-attachment:scroll;
 }
 
-/* 旋转容器：占满「横过来之后」的屏幕区域，底部留出底栏高度 */
 body.rotate #rotWrap{
   position:fixed;
   top:0;left:0;
-  width:calc(100vh - var(--foot-h,64px));
-  width:calc(100dvh - var(--foot-h,64px));
+  width:calc(100vh - var(--foot-h,56px));
+  width:calc(100dvh - var(--foot-h,56px));
   height:100vw;
   height:100dvw;
   transform-origin:top left;
   transform:translate(100vw,0) rotate(90deg);
   transform:translate(100dvw,0) rotate(90deg);
+  display:flex;
+  flex-direction:column;
   overflow:hidden;
   z-index:2;
 }
 
-/* 横屏下收紧头部，给内容腾出高度 */
-body.rotate header{padding:10px 16px 2px;}
-body.rotate header h1{font-size:19px;letter-spacing:4px;}
-body.rotate header p{margin-top:4px;font-size:11px;letter-spacing:1px;}
-body.rotate main{padding:10px 14px 0;grid-template-columns:minmax(0,1fr) 300px;}
-body.rotate main.duo{grid-template-columns:250px minmax(0,1fr) 250px;}
-body.rotate .panel{padding:12px;border-radius:14px;}
-body.rotate .panel-head{margin-bottom:9px;}
-body.rotate .panel-head h2{font-size:15px;letter-spacing:2px;}
+/* 横屏下收紧头部 */
+body.rotate header{
+  flex:0 0 auto;
+  padding:6px 14px 3px;
+}
+body.rotate header h1{font-size:16px;letter-spacing:3px;}
+body.rotate header p{margin:2px 0 0;font-size:10px;letter-spacing:1px;}
 
-/* 旋转后「高度」由 100vw 决定 */
+/* 主区域：flex 撑满剩余高度 */
+body.rotate main{
+  flex:1 1 auto;
+  min-height:0;
+  padding:6px 10px 8px;
+  gap:10px;
+  grid-template-columns:minmax(0,1fr) 272px;
+  grid-template-rows:minmax(0,1fr);
+  align-items:stretch;
+  overflow:hidden;
+}
+body.rotate main.duo{
+  grid-template-columns:230px minmax(0,1fr) 230px;
+  grid-template-rows:auto minmax(0,1fr);
+}
+body.rotate main.duo #duoBar{
+  grid-column:1 / -1;
+  grid-row:1;
+}
+body.rotate main.duo #p1Panel{grid-column:1;grid-row:2;}
+body.rotate main.duo #poolPanel{grid-column:2;grid-row:2;}
+body.rotate main.duo #p2Panel{grid-column:3;grid-row:2;}
+
+/* 面板：纵向 flex，内容自适应 */
+body.rotate .panel{
+  padding:8px 10px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  overflow:hidden;
+}
+body.rotate .panel-head{
+  margin-bottom:6px;
+  flex-wrap:nowrap;
+  gap:8px;
+  flex:0 0 auto;
+}
+body.rotate .panel-head h2{font-size:13px;letter-spacing:2px;}
+body.rotate .head-tools{gap:6px;}
+body.rotate .edit-hint{display:none;}
+body.rotate #search{
+  width:140px;padding:5px 9px;font-size:11px;border-radius:8px;
+}
+
+/* 精灵池：占满剩余高度 */
 body.rotate .pool-scroll{
-  max-height:calc(100vw - 210px);
-  max-height:calc(100dvw - 210px);
-  min-height:80px;
+  flex:1 1 auto;
+  min-height:0;
+  max-height:none;
+  padding-right:5px;
 }
-body.rotate main.duo .pool-scroll{
-  max-height:calc(100vw - 230px);
-  max-height:calc(100dvw - 230px);
+body.rotate #poolPanel .status{
+  flex:0 0 auto;
+  margin-top:4px;
+  font-size:10px;
+  line-height:1.35;
+  max-height:26px;
+  overflow:hidden;
 }
 
-body.rotate .slot{min-height:78px;}
-body.rotate .duo-slots .slot{min-height:70px;}
-body.rotate .total-row{margin-top:9px;}
-body.rotate .total-row b{font-size:20px;}
-body.rotate .actions{margin-top:9px;}
-body.rotate button{padding:8px;}
-body.rotate .status{margin-top:8px;font-size:11.5px;}
+/* 分组与卡片紧凑化 */
+body.rotate .cost-group{margin-bottom:8px;}
+body.rotate .cost-group:last-child{margin-bottom:2px;}
+body.rotate .group-head{
+  padding:0 2px 4px;margin-bottom:6px;gap:7px;
+}
+body.rotate .group-badge{
+  min-width:38px;height:18px;padding:0 7px;font-size:10.5px;border-radius:6px;
+}
+body.rotate .group-count{font-size:10px;}
+body.rotate .group-grid{
+  grid-template-columns:repeat(auto-fill,minmax(calc(64px * var(--is,1)),1fr));
+  gap:7px;
+}
+body.rotate .card{padding:5px 3px 5px;border-radius:9px;gap:3px;}
+body.rotate .card:hover{transform:translateY(-1px);}
+body.rotate .icon-wrap{
+  width:calc(52px * var(--is,1));
+  height:calc(52px * var(--is,1));
+  border-radius:8px;
+}
+body.rotate .icon-wrap img{
+  width:calc(52px * var(--is,1));
+  height:calc(52px * var(--is,1));
+}
+body.rotate .icon-wrap::after{font-size:calc(20px * var(--is,1));}
+body.rotate .card .name{font-size:9.5px;line-height:1.15;}
+body.rotate .card .cost{
+  min-width:18px;height:16px;padding:0 4px;
+  font-size:9.5px;border-radius:5px;
+  top:3px;right:3px;
+}
+body.rotate .card.selected::before{
+  left:3px;top:3px;width:13px;height:13px;
+  line-height:13px;font-size:9px;
+}
+body.rotate .card .repeat-tag{
+  left:3px;bottom:3px;padding:0 4px;border-radius:5px;font-size:8.5px;
+}
+body.rotate .card .tag-p1,
+body.rotate .card .tag-p2{
+  left:3px;padding:0 4px;border-radius:5px;font-size:8.5px;
+}
+body.rotate .card .tag-p1{top:3px;}
+body.rotate .card .tag-p2{top:18px;}
 
-/* 弹窗在旋转空间内居中显示 */
-body.rotate .modal-box{max-height:92%;width:min(420px,86vw);}
-body.rotate .modal-overlay{padding:12px;}
+/* 单人阵容：3 列 2 行 */
+body.rotate #soloPanel{overflow:hidden;}
+body.rotate #soloPanel .slots{
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(2,auto);
+  gap:6px;
+  flex:0 0 auto;
+}
+body.rotate .slot{
+  min-height:70px;
+  padding:4px 3px 3px;
+  border-radius:9px;
+  gap:2px;
+}
+body.rotate .slot.empty{font-size:16px;}
+body.rotate .slot .icon-wrap{
+  width:calc(38px * var(--is,1));
+  height:calc(38px * var(--is,1));
+  border-radius:7px;
+}
+body.rotate .slot .icon-wrap img{
+  width:calc(38px * var(--is,1));
+  height:calc(38px * var(--is,1));
+}
+body.rotate .slot .icon-wrap::after{font-size:calc(14px * var(--is,1));}
+body.rotate .slot .name{font-size:9px;}
+body.rotate .slot .cost{
+  min-width:16px;height:14px;padding:0 4px;font-size:8.5px;border-radius:5px;
+}
 
-/* 旋转模式下底栏按钮略微紧凑 */
-body.rotate ~ footer .file-btn,
-body.rotate ~ footer .dice-btn{padding:7px 16px;font-size:12.5px;}
+body.rotate .total-row{
+  margin-top:6px;font-size:11px;flex:0 0 auto;
+}
+body.rotate .total-row b{font-size:18px;}
+body.rotate .limit-row{
+  margin-top:4px;font-size:10.5px;flex:0 0 auto;
+}
+body.rotate .limit-row input{
+  width:66px;padding:3px 8px;font-size:11px;border-radius:7px;
+}
+body.rotate .bar{margin-top:4px;height:6px;flex:0 0 auto;}
+body.rotate .actions{margin-top:6px;gap:6px;flex:0 0 auto;}
+body.rotate .actions button{padding:6px;font-size:10.5px;letter-spacing:1px;border-radius:8px;}
 
-/* 极窄横屏（小屏手机） */
-body.rotate.rot-tiny main{grid-template-columns:minmax(0,1fr) 250px;}
+/* 双人：控制条与阵容面板 */
+body.rotate main.duo .duo-bar{
+  padding:6px 12px;gap:6px;border-radius:11px;
+}
+body.rotate .duo-msg{font-size:11px;}
+body.rotate .duo-cur{font-size:12px;padding:1px 9px;border-radius:7px;}
+body.rotate .duo-info{font-size:10px;}
+body.rotate .duo-btn{padding:5px 12px;font-size:10.5px;}
+
+body.rotate main.duo #p1Panel,
+body.rotate main.duo #p2Panel{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+body.rotate .duo-slots{
+  grid-template-columns:repeat(3,1fr);
+  grid-auto-rows:auto;
+  gap:5px;
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+}
+body.rotate .duo-slots .slot{
+  min-height:62px;
+  padding:3px 2px 3px;
+}
+body.rotate .duo-slots .slot .icon-wrap{
+  width:calc(34px * var(--is,1));
+  height:calc(34px * var(--is,1));
+  border-radius:6px;
+}
+body.rotate .duo-slots .slot .icon-wrap img{
+  width:calc(34px * var(--is,1));
+  height:calc(34px * var(--is,1));
+}
+body.rotate .duo-slots .slot .icon-wrap::after{font-size:calc(12px * var(--is,1));}
+body.rotate .duo-slots .slot .name{font-size:8.5px;}
+body.rotate .duo-slots .slot .cost{
+  min-width:15px;height:13px;padding:0 3px;font-size:8px;border-radius:4px;
+}
+body.rotate .duo-slots .slot .ban-mark::before{width:22px;height:22px;border-width:3px;}
+body.rotate .duo-slots .slot .ban-mark::after{width:30px;height:3px;}
+
+/* ---------- 旋转模式下锁定交互（防止误触） ---------- */
+body.rotate .card .cost{pointer-events:none;}
+body.rotate .card .cost:hover{transform:none;filter:none;}
+body.rotate .panel-head h2.editable{cursor:default;pointer-events:none;}
+body.rotate .panel-head h2.editable::after{content:none;}
+body.rotate .panel-head h2.editable:hover{filter:none;}
+
+/* ---------- 弹窗与提示在旋转空间内居中 ---------- */
+body.rotate .modal-overlay{padding:10px;}
+body.rotate .modal-box{
+  width:min(400px,88vw);
+  max-height:calc(100% - 12px);
+  padding:14px 18px 14px;
+  border-radius:14px;
+}
+body.rotate .modal-box h3{
+  font-size:14px;margin:0 0 10px;letter-spacing:2px;
+}
+body.rotate .modal-field{
+  margin-bottom:8px;font-size:11px;gap:8px;
+}
+body.rotate .modal-field label{flex:0 0 84px;}
+body.rotate .modal-field input[type=number],
+body.rotate .modal-field input[type=text]{
+  padding:5px 9px;font-size:11.5px;border-radius:8px;
+}
+body.rotate .modal-hint{
+  font-size:9.5px;line-height:1.55;
+  margin:2px 0 10px;padding:7px 9px;border-radius:8px;
+}
+body.rotate .modal-actions{gap:8px;}
+body.rotate .modal-btn-start{padding:8px;font-size:11.5px;border-radius:9px;}
+body.rotate .modal-btn-cancel{padding:8px 14px;font-size:10.5px;border-radius:9px;}
+
+body.rotate #toast{
+  left:50%;
+  top:50%;
+  bottom:auto;
+  transform:translate(-50%,-50%) scale(.96);
+  font-size:12px;
+  padding:9px 16px;
+  white-space:normal;
+  text-align:center;
+  max-width:70%;
+}
+body.rotate #toast.show{
+  transform:translate(-50%,-50%) scale(1);
+  opacity:1;
+}
+
+/* ---------- 小屏横屏兼容（视觉宽 < 700） ---------- */
+body.rotate.rot-sm header h1{font-size:14px;letter-spacing:2px;}
+body.rotate.rot-sm header p{font-size:9px;}
+body.rotate.rot-sm .group-grid{
+  grid-template-columns:repeat(auto-fill,minmax(calc(58px * var(--is,1)),1fr));
+  gap:6px;
+}
+body.rotate.rot-sm .icon-wrap{
+  width:calc(46px * var(--is,1));
+  height:calc(46px * var(--is,1));
+}
+body.rotate.rot-sm .icon-wrap img{
+  width:calc(46px * var(--is,1));
+  height:calc(46px * var(--is,1));
+}
+body.rotate.rot-sm main.duo{grid-template-columns:200px minmax(0,1fr) 200px;}
+
+/* ---------- 极窄横屏（视觉高 < 360） ---------- */
+body.rotate.rot-tiny main{padding:4px 8px 6px;gap:8px;}
+body.rotate.rot-tiny header{padding:4px 12px 2px;}
+body.rotate.rot-tiny header h1{font-size:13px;}
+body.rotate.rot-tiny header p{display:none;}
+body.rotate.rot-tiny .slot{min-height:62px;}
+body.rotate.rot-tiny .duo-slots .slot{min-height:56px;}
+body.rotate.rot-tiny .total-row b{font-size:16px;}
 body.rotate.rot-tiny main.duo{grid-template-columns:1fr 1fr;}
 body.rotate.rot-tiny main.duo #duoBar{grid-column:1 / -1;grid-row:1;}
 body.rotate.rot-tiny main.duo #poolPanel{grid-column:1 / -1;grid-row:2;}
 body.rotate.rot-tiny main.duo #p1Panel{grid-column:1;grid-row:3;}
 body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
-body.rotate.rot-tiny main.duo .pool-scroll{
-  max-height:34vw;
-  max-height:34dvw;
-}
+body.rotate.rot-tiny main.duo .pool-scroll{max-height:32vw;}
 
 @media (max-width:520px){
   #mobileBtn{top:8px;left:8px;padding:6px 12px;font-size:11.5px;}
@@ -1124,6 +1362,8 @@ body.rotate.rot-tiny main.duo .pool-scroll{
   </div>
 </div>
 
+<div id="toast"></div>
+
 </div><!-- /#rotWrap -->
 
 <footer>
@@ -1147,38 +1387,33 @@ body.rotate.rot-tiny main.duo .pool-scroll{
   </div>
 </footer>
 
-<div id="toast"></div>
-
 <script>
 (function(){
   'use strict';
 
   /* ================= 配置 ================= */
-  const MAX_PICK = 6;                 // 单人：最多选 6 只
-  const DEFAULT_MAX_COST = 18;        // 单人：默认总费用上限
-  const MAX_COST_LIMIT = 9999;        // 上限输入框最大允许值
+  const MAX_PICK = 6;
+  const DEFAULT_MAX_COST = 18;
+  const MAX_COST_LIMIT = 9999;
   const XLSX_FILE = '197.xlsx';
 
-  /* ★ 双人模式：默认设置（可被用户覆盖） */
   const DUO_DEFAULT_SETTINGS = {
-    total: 6,        // 每名玩家的精灵总数上限
-    costLimit: 100,  // 每名玩家的费用上限
-    banCount: 3,     // 双方互相禁止的精灵数量（0 = 不禁止）
-    order: [],       // 选人顺序（每回合可选数量），空 = 每次 1 只
-    names: ['玩家1', '玩家2']   // ★ 玩家名称
+    total: 6,
+    costLimit: 100,
+    banCount: 3,
+    order: [],
+    names: ['玩家1', '玩家2']
   };
-  let savedDuoSettings = null;         // 记住上一次使用的双人设置
+  let savedDuoSettings = null;
 
   const ICON_DIRS = ['icon', 'icons'];
   const EXTS = ['png','jpg','jpeg','webp','gif','bmp','svg','avif','PNG','JPG','JPEG'];
 
-  /* ★ 可重复选择的精灵：名字含「任意幼年体」或「暗雷」 */
   function isRepeatable(p){
     if(!p || typeof p.name !== 'string') return false;
     return p.name.indexOf('任意幼年体') !== -1 || p.name.indexOf('暗雷') !== -1;
   }
 
-  /* 0 费“优先添加”的精灵 */
   function isPriorityZero(p){
     return !!p && typeof p.name === 'string' && p.name.indexOf('钢牙鲨') !== -1;
   }
@@ -1234,20 +1469,17 @@ body.rotate.rot-tiny main.duo .pool-scroll{
 卡尔加斯   6
 
 `;
-//提亚斯      6
-//亚梅丝      6
 
   /* ================= 状态 ================= */
-  let pets = [];                      // [{name, cost}]
-  let selected = [];                  // 单人：选中的索引数组（可重复选择，故用数组）
+  let pets = [];
+  let selected = [];
   let query = '';
   let iconFailCount = 0;
-  let maxCost = DEFAULT_MAX_COST;     // 单人：总费用上限
+  let maxCost = DEFAULT_MAX_COST;
   let maxCostTimer = null;
 
-  /* ★ 模式与双人状态 */
-  let mode = 'solo';                  // 'solo' | 'duo'
-  let duo = null;                     // 双人状态对象
+  let mode = 'solo';
+  let duo = null;
 
   function cloneDuoSettings(s){
     const nm = (s && s.names && s.names.length >= 2) ? s.names : DUO_DEFAULT_SETTINGS.names;
@@ -1278,17 +1510,16 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     }
     return {
       settings: settings,
-      teams: [[], []],                // 各自阵容（精灵索引）
-      banned: [new Set(), new Set()], // banned[pi]：玩家 pi 的阵容里已被禁止的精灵
-      first: null,                    // 先手玩家
-      current: 0,                     // 当前行动玩家
-      phase: 'settings',              // settings | choose-first | picking | banning | done
-      turnIdx: 0,                     // 当前回合序号（用于选人顺序）
-      pickRemaining: 0                // 当前回合还可选几只
+      teams: [[], []],
+      banned: [new Set(), new Set()],
+      first: null,
+      current: 0,
+      phase: 'settings',
+      turnIdx: 0,
+      pickRemaining: 0
     };
   }
 
-  /* ★ 取玩家显示名 */
   function duoName(pi){
     const n = duo && duo.settings && duo.settings.names;
     const v = n && n[pi];
@@ -1384,7 +1615,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
   const subTitleEl     = document.getElementById('subTitle');
   const footerEl       = document.querySelector('footer');
 
-  /* ★ 弹窗元素 */
   const duoModal   = document.getElementById('duoModal');
   const mName1In   = document.getElementById('mName1');
   const mName2In   = document.getElementById('mName2');
@@ -1409,7 +1639,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     statusEl.className = 'status' + (type ? ' ' + type : '');
   }
 
-  /* 费用颜色：0/1 费 → 蓝(200)，12 费及以上 → 红(0) */
   function costHue(c){
     if(c <= 0) return 200;
     const t = (Math.min(12, c) - 1) / 11;
@@ -1420,6 +1649,11 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     el.style.color = 'hsl(' + h + ',100%,74%)';
     el.style.border = '1px solid hsla(' + h + ',100%,60%,.55)';
     el.style.background = 'hsla(' + h + ',100%,50%,.16)';
+  }
+
+  /* ★ 是否处于手机横屏模式（用于锁定交互） */
+  function isRotateMode(){
+    return document.body.classList.contains('rotate');
   }
 
   /* ================= 图标加载 ================= */
@@ -1461,7 +1695,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
           failed = true;
           iconFailCount++;
           img.style.display = 'none';
-          console.warn('[图标加载失败] ' + name + ' —— 已尝试 ' + paths.length + ' 个路径，例如：', paths[0]);
         }
         return;
       }
@@ -1495,7 +1728,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     return t;
   }
 
-  /* 统计某个索引在某个阵容中出现次数（可重复精灵会出现多次） */
   function countIn(team, i){
     let n = 0;
     for(let k = 0; k < team.length; k++){
@@ -1504,7 +1736,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     return n;
   }
 
-  /* 玩家 pi 是否可以选择精灵 i */
   function duoPickable(pi, i){
     const p = pets[i];
     if(!p) return false;
@@ -1513,18 +1744,16 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     const total = duo.settings.total;
     const costLimit = duo.settings.costLimit;
 
-    if(myTeam.length >= total) return false;              // 阵容已满
-    if(duoCost(pi) + p.cost > costLimit) return false;    // 费用不足
+    if(myTeam.length >= total) return false;
+    if(duoCost(pi) + p.cost > costLimit) return false;
 
-    // ★ 可重复精灵：自己可以反复选（对方也照样可以选）
     if(isRepeatable(p)) return true;
 
-    if(myTeam.indexOf(i) !== -1) return false;            // 自己已选过
-    if(otherTeam.indexOf(i) !== -1) return false;         // 对方已选走
+    if(myTeam.indexOf(i) !== -1) return false;
+    if(otherTeam.indexOf(i) !== -1) return false;
     return true;
   }
 
-  /* 玩家 pi 还能不能选出任何一只 */
   function duoCanPick(pi){
     if(duo.teams[pi].length >= duo.settings.total) return false;
     for(let i = 0; i < pets.length; i++){
@@ -1533,7 +1762,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     return false;
   }
 
-  /* 玩家 pi 还能不能继续禁止对方 */
   function duoCanBan(pi){
     const q = 1 - pi;
     if(duo.settings.banCount <= 0) return false;
@@ -1613,8 +1841,12 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     container.appendChild(frag);
   }
 
-  /* ================= ★ 费用就地编辑 ================= */
+  /* ================= ★ 费用就地编辑（横屏下锁定） ================= */
   function openCostEditor(card, i, costEl){
+    if(isRotateMode()){
+      toast('手机横屏模式下已锁定费用编辑，退出横屏后可修改');
+      return;
+    }
     if(card.querySelector('.cost-input')) return;
     const p = pets[i];
     if(!p) return;
@@ -1645,12 +1877,12 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       if(apply){
         const raw = String(input.value).trim();
         let v = parseInt(raw, 10);
-        if(raw === '' || !isFinite(v) || v < 0) v = p.cost;   // 非法输入 → 还原
+        if(raw === '' || !isFinite(v) || v < 0) v = p.cost;
         if(v > MAX_COST_LIMIT) v = MAX_COST_LIMIT;
 
         if(v !== p.cost){
           p.cost = v;
-          refresh();                                           // 重绘（卡片会重新按费用分组）
+          refresh();
           toast('「' + p.name + '」费用已改为 ' + v, true);
           return;
         }
@@ -1674,13 +1906,17 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     setTimeout(function(){ input.focus(); input.select(); }, 0);
   }
 
-  /* ================= ★ 玩家名称就地编辑 ================= */
+  /* ================= ★ 玩家名称就地编辑（横屏下锁定） ================= */
   function openNameEditor(pi){
     if(mode !== 'duo' || !duo) return;
+    if(isRotateMode()){
+      toast('手机横屏模式下已锁定玩家名编辑，退出横屏后可修改');
+      return;
+    }
     const panel = pi === 0 ? p1Panel : p2Panel;
     const h2 = panel.querySelector('.panel-head h2');
     if(!h2 || !h2.parentNode) return;
-    if(panel.querySelector('.name-input')) return;   // 已在编辑中
+    if(panel.querySelector('.name-input')) return;
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -1758,7 +1994,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       blocked = !canRemove && (soloFull || soloTotal + p.cost > maxCost);
       if(isSel) cls.push('selected');
     }else{
-      // ★ 可重复精灵可能被同一玩家选多次，因此按出现次数统计
       const c1 = countIn(duo.teams[0], i);
       const c2 = countIn(duo.teams[1], i);
       cnt = c1 + c2;
@@ -1796,7 +2031,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     cost.title = '点击修改「' + p.name + '」的费用';
     paintCost(cost, p.cost);
 
-    /* ★ 点击费用角标 → 就地编辑（不触发卡片选中） */
     cost.addEventListener('click', function(ev){
       ev.stopPropagation();
       ev.preventDefault();
@@ -1807,7 +2041,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     card.appendChild(name);
     card.appendChild(cost);
 
-    /* ★ 双人：标记归属 */
     if(mode === 'duo'){
       if(countIn(duo.teams[0], i) > 0){
         const t1 = document.createElement('div');
@@ -1842,7 +2075,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
   function renderPool(){
     const q = query.trim().toLowerCase();
 
-    /* 池子锁定态：双人模式下仅在选人阶段可点 */
     poolEl.classList.toggle(
       'pool-locked',
       mode === 'duo' && duo.phase !== 'picking'
@@ -1951,7 +2183,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
         onClick: function(idx){ onDuoSlotClick(pi, idx); }
       });
 
-      /* ★ 面板标题 = 玩家名称（可点击改名） */
       const panel = pi === 0 ? p1Panel : p2Panel;
       const h2 = panel.querySelector('.panel-head h2');
       if(h2) h2.textContent = duoName(pi);
@@ -1997,7 +2228,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       });
     }
 
-    /* —— 设置阶段：等待弹窗完成 —— */
     if(duo.phase === 'settings'){
       mk('span', 'duo-msg', '双人模式设置尚未完成');
       const b = mk('button', 'duo-btn p1', '打开设置');
@@ -2007,7 +2237,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       return;
     }
 
-    /* —— 选择先手 —— */
     if(duo.phase === 'choose-first'){
       const s = duo.settings;
       mk('span', 'duo-msg', '请选择先手玩家：');
@@ -2031,7 +2260,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       return;
     }
 
-    /* —— 选人 —— */
     if(duo.phase === 'picking'){
       const s = duo.settings;
       mk('span', 'duo-msg', '选人阶段 · 轮到');
@@ -2044,7 +2272,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       return;
     }
 
-    /* —— 禁止 —— */
     if(duo.phase === 'banning'){
       const s = duo.settings;
       const done = duo.banned[1 - duo.current].size;
@@ -2055,7 +2282,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       return;
     }
 
-    /* —— 结束 —— */
     mk('span', 'duo-msg', '★ 对局结束'
       + (duo.settings.banCount > 0
         ? ' · 双方各禁止了对方 ' + duo.settings.banCount + ' 只精灵'
@@ -2084,7 +2310,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
   mStartBtn.addEventListener('click', function(){
     if(!duo || mode !== 'duo') return;
 
-    /* ★ 玩家名称 */
     const n1 = (String(mName1In.value).trim() || '玩家1').slice(0, 10);
     const n2 = (String(mName2In.value).trim() || '玩家2').slice(0, 10);
     mName1In.value = n1;
@@ -2205,7 +2430,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     duo.teams[pi].push(i);
     duo.pickRemaining--;
 
-    /* 回合结束条件：本回合次数用尽 / 已选满 / 无法继续选择 */
     if(duo.pickRemaining <= 0
       || duo.teams[pi].length >= s.total
       || !duoCanPick(pi)){
@@ -2215,13 +2439,11 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     }
   }
 
-  /* ★ 从指定回合序号开始尝试开启一个回合 */
   function startTurnFrom(idx){
     const total = duo.settings.total;
     const order = duo.settings.order;
 
     for(let guard = 0; guard < 1000; guard++){
-      /* 结束条件 */
       if(duo.teams[0].length >= total && duo.teams[1].length >= total){
         startBanPhase(); return;
       }
@@ -2230,7 +2452,7 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       }
 
       let batch = order[idx];
-      if(batch === undefined) batch = 1;                 // 顺序用完后默认每次 1 只
+      if(batch === undefined) batch = 1;
       const player = ((duo.first || 0) + idx) % 2;
       const slotsLeft = total - duo.teams[player].length;
 
@@ -2479,14 +2701,13 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     }
   }
 
-  /* ================= ★ 导出精灵池图片（WebP / JPEG / PNG 可选） ================= */
+  /* ================= ★ 导出精灵池图片 ================= */
   const PNG_FONT = '"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif';
   const PNG_CARD_W = 110;
   const PNG_CARD_H = 130;
   const PNG_GAP = 12;
   const PNG_PAD = 26;
 
-  /* 圆角矩形路径 */
   function rr(c, x, y, w, h, r){
     r = Math.min(r, w / 2, h / 2);
     c.beginPath();
@@ -2498,7 +2719,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     c.closePath();
   }
 
-  /* 文本按宽度截断加省略号 */
   function fitText(c, text, maxW){
     if(c.measureText(text).width <= maxW) return text;
     let t = text;
@@ -2508,7 +2728,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     return t + '…';
   }
 
-  /* 为导出预加载图标（依次尝试 icon/ 的各种路径） */
   function loadIconForExport(name){
     return new Promise(function(resolve){
       const paths = buildIconPaths(name);
@@ -2533,11 +2752,9 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     });
   }
 
-  /* 画一张精灵卡片（导出用） */
   function drawPoolCard(c, x, y, p, img){
     const W = PNG_CARD_W, H = PNG_CARD_H;
 
-    /* 卡片底 */
     const g = c.createLinearGradient(x, y, x + W * 0.45, y + H);
     g.addColorStop(0, 'rgba(32,54,104,.95)');
     g.addColorStop(1, 'rgba(10,18,40,.98)');
@@ -2548,7 +2765,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     c.strokeStyle = 'rgba(110,170,255,.22)';
     c.stroke();
 
-    /* 图标区 */
     const iw = W - 16;
     const ix = x + 8, iy = y + 8;
     rr(c, ix, iy, iw, iw, 11);
@@ -2574,13 +2790,11 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     }
     c.restore();
 
-    /* 名字 */
     c.textAlign = 'center';
     c.fillStyle = '#cfe3ff';
     c.font = '600 12px ' + PNG_FONT;
     c.fillText(fitText(c, p.name, W - 14), x + W / 2, iy + iw + 17);
 
-    /* 费用角标 */
     const hue = costHue(p.cost);
     const cs = String(p.cost);
     c.font = '700 11px ' + PNG_FONT;
@@ -2603,7 +2817,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       return;
     }
 
-    /* 收集当前筛选结果（与界面显示一致） */
     const q = query.trim().toLowerCase();
     const groups = new Map();
     for(let i = 0; i < pets.length; i++){
@@ -2625,7 +2838,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     try{
       const costs = Array.from(groups.keys()).sort(function(a, b){ return a - b; });
 
-      /* 列数：最多 8 列 */
       let maxGroupSize = 0;
       costs.forEach(function(c){
         maxGroupSize = Math.max(maxGroupSize, groups.get(c).length);
@@ -2648,7 +2860,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       H += PNG_PAD - 22;
       H = Math.round(H);
 
-      /* 预加载图标 */
       const names = [];
       const nameSeen = Object.create(null);
       blocks.forEach(function(b){
@@ -2666,7 +2877,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
         });
       }));
 
-      /* 建画布（2 倍分辨率，更清晰） */
       const SCALE = 2;
       const cv = document.createElement('canvas');
       cv.width  = Math.round(W * SCALE);
@@ -2675,7 +2885,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       c2.scale(SCALE, SCALE);
       c2.textBaseline = 'middle';
 
-      /* 背景（不透明，JPEG 也安全） */
       const bg = c2.createLinearGradient(0, 0, W * 0.5, H);
       bg.addColorStop(0, '#0a1330');
       bg.addColorStop(0.5, '#060a1c');
@@ -2683,7 +2892,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       c2.fillStyle = bg;
       c2.fillRect(0, 0, W, H);
 
-      /* 柔和光晕 */
       const gl1 = c2.createRadialGradient(W * 0.15, 0, 10, W * 0.15, 0, W * 0.8);
       gl1.addColorStop(0, 'rgba(38,80,180,.35)');
       gl1.addColorStop(1, 'rgba(38,80,180,0)');
@@ -2696,7 +2904,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       c2.fillStyle = gl2;
       c2.fillRect(0, 0, W, H);
 
-      /* 标题 */
       let y = PNG_PAD;
       c2.textAlign = 'left';
       c2.fillStyle = '#9fd4ff';
@@ -2723,9 +2930,7 @@ body.rotate.rot-tiny main.duo .pool-scroll{
 
       y += HEADER_H;
 
-      /* 逐组绘制 */
       blocks.forEach(function(b){
-        /* —— 组标题 —— */
         const hue = costHue(b.cost);
         const badgeText = b.cost + ' 费';
 
@@ -2761,7 +2966,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
         c2.lineTo(PNG_PAD + gridW, y + 30.5);
         c2.stroke();
 
-        /* —— 卡片 —— */
         for(let r = 0; r < b.rows; r++){
           for(let col = 0; col < COLS; col++){
             const k = r * COLS + col;
@@ -2780,7 +2984,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
         y += 30 + b.rows * PNG_CARD_H + (b.rows - 1) * PNG_GAP + 22;
       });
 
-      /* —— 按指定格式输出 —— */
       const MIME_EXT = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' };
       mime = MIME_EXT[mime] ? mime : 'image/webp';
       let ext = MIME_EXT[mime];
@@ -2799,7 +3002,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
         }
       });
 
-      /* 若浏览器不支持所选格式，toBlob 可能回退为 PNG，这里同步真实扩展名 */
       if(blob.type && MIME_EXT[blob.type] && blob.type !== mime){
         ext = MIME_EXT[blob.type];
       }
@@ -2829,12 +3031,11 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     }
   }
 
-  /* ================= ★ 导出精灵池 ZIP（图标文件 + 清单） ================= */
+  /* ================= ★ 导出精灵池 ZIP ================= */
   function sanitizeFileName(name){
     return String(name).replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').replace(/\s+/g, ' ').trim() || '未命名';
   }
 
-  /* ZIP 导出专用的精简路径（避免每个精灵请求上百个 404） */
   function buildZipIconPaths(name){
     const variants = [name];
     if(/\s/.test(name)){
@@ -2853,7 +3054,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     return out;
   }
 
-  /* 带超时的 fetch */
   async function fetchWithTimeout(url, ms){
     const ctrl = new AbortController();
     const t = setTimeout(function(){ ctrl.abort(); }, ms);
@@ -2864,7 +3064,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     }
   }
 
-  /* 尝试读取某个精灵的图标 Blob */
   async function fetchIconBlob(name){
     const paths = buildZipIconPaths(name);
     for(let i = 0; i < paths.length; i++){
@@ -2877,9 +3076,7 @@ body.rotate.rot-tiny main.duo .pool-scroll{
             return { blob: blob, ext: ext, path: paths[i] };
           }
         }
-      }catch(e){
-        /* 路径不存在 / file:// 被阻止 / 超时 —— 继续尝试下一个 */
-      }
+      }catch(e){}
     }
     return null;
   }
@@ -2894,7 +3091,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       return;
     }
 
-    /* 收集当前筛选结果（与界面显示一致） */
     const q = query.trim().toLowerCase();
     const groups = new Map();
     for(let i = 0; i < pets.length; i++){
@@ -2942,7 +3138,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
             const dir = item.cost + '费';
             const fname = sanitizeFileName(p.name) + '.' + res.ext;
             filePath = dir + '/' + fname;
-            /* 同名（可重复精灵只出现一次于清单）直接写入；若同名不同扩展，加后缀 */
             let finalPath = filePath;
             let n = 2;
             while(zip.file(finalPath)){
@@ -2972,13 +3167,11 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       for(let i = 0; i < workerCount; i++) workers.push(worker());
       await Promise.all(workers);
 
-      /* 排序清单：费用升序 → 名字 */
       manifest.sort(function(a, b){
         if(a.cost !== b.cost) return a.cost - b.cost;
         return a.name.localeCompare(b.name, 'zh');
       });
 
-      /* 生成时间戳 */
       const d = new Date();
       const pad = function(n){ return String(n).padStart(2, '0'); };
       const timeStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
@@ -2986,7 +3179,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       const stamp = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate())
                   + '_' + pad(d.getHours()) + pad(d.getMinutes());
 
-      /* 清单 TXT */
       const lines = [];
       lines.push('精灵池清单');
       lines.push('========================================');
@@ -3004,7 +3196,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       });
       zip.file('精灵池清单.txt', lines.join('\n'));
 
-      /* 清单 CSV（带 BOM，方便 Excel 打开） */
       const csvLines = ['费用,精灵名,图标文件'];
       manifest.forEach(function(r){
         const esc = function(s){ return '"' + String(s).replace(/"/g, '""') + '"'; };
@@ -3012,7 +3203,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       });
       zip.file('精灵池清单.csv', '\ufeff' + csvLines.join('\r\n'));
 
-      /* 打包（图片已压缩，用 STORE 最快） */
       btn.textContent = '正在压缩…';
       const blob = await zip.generateAsync({
         type: 'blob',
@@ -3105,7 +3295,7 @@ body.rotate.rot-tiny main.duo .pool-scroll{
 
   diceBtn.addEventListener('click', rollDice);
 
-  /* ================= ★ 图标缩放（右上角按钮） ================= */
+  /* ================= ★ 图标缩放 ================= */
   const ICON_ZOOM_MIN  = 10;
   const ICON_ZOOM_MAX  = 200;
   const ICON_ZOOM_STEP = 10;
@@ -3144,7 +3334,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     outBtn.addEventListener('click', function(){ setPct(pct - ICON_ZOOM_STEP); });
     inBtn.addEventListener('click',  function(){ setPct(pct + ICON_ZOOM_STEP); });
 
-    /* 点击百分比数字 → 一键恢复 100% */
     valEl.addEventListener('click', function(){
       if(pct === 100) return;
       pct = 100;
@@ -3161,17 +3350,24 @@ body.rotate.rot-tiny main.duo .pool-scroll{
   const mobileBtn = document.getElementById('mobileBtn');
   let mobileMode = false;
 
-  /* 记录底栏真实高度，供旋转容器扣除 */
   function syncFootHeight(){
-    const h = footerEl ? footerEl.offsetHeight : 64;
-    document.documentElement.style.setProperty('--foot-h', (h || 64) + 'px');
+    const h = footerEl ? footerEl.offsetHeight : 56;
+    document.documentElement.style.setProperty('--foot-h', (h || 56) + 'px');
   }
 
-  /* 根据「旋转后的可用宽度」决定横屏下的列数 */
+  /* 根据旋转后的实际尺寸自适应（兼容不同比例的手机） */
   function updateMobileLayout(){
-    if(!mobileMode) return;
-    const rotW = window.innerHeight;           // 旋转后布局的宽度
-    document.body.classList.toggle('rot-tiny', rotW < 860);
+    if(!mobileMode){
+      document.body.classList.remove('rot-sm', 'rot-tiny');
+      return;
+    }
+    const vh = window.innerHeight;                       // 屏幕 CSS 高
+    const vw = window.innerWidth;                        // 屏幕 CSS 宽
+    const footH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--foot-h')) || 56;
+    const visW = vh - footH;                             // 横屏视觉宽度
+    const visH = vw;                                     // 横屏视觉高度
+    document.body.classList.toggle('rot-sm', visW < 700);
+    document.body.classList.toggle('rot-tiny', visH < 360);
   }
 
   function setMobileMode(on){
@@ -3185,14 +3381,13 @@ body.rotate.rot-tiny main.duo .pool-scroll{
 
     syncFootHeight();
     updateMobileLayout();
-
-    /* 重设星空画布尺寸 */
     initStars();
 
-    /* 让布局在旋转后重新计算一次 */
     window.scrollTo(0, 0);
 
-    toast(on ? '已切换为手机横屏模式，请横置手机使用' : '已退出手机横屏模式', true);
+    toast(on
+      ? '已切换为手机横屏模式（已锁定费用 / 玩家名编辑）'
+      : '已退出手机横屏模式', true);
   }
 
   mobileBtn.addEventListener('click', function(){
@@ -3214,7 +3409,6 @@ body.rotate.rot-tiny main.duo .pool-scroll{
 
   /* ================= 数据装载 ================= */
   function commitList(list, statusMsg, statusType){
-    /* ★ 确保 0 费可重复精灵「暗雷」始终存在 */
     let hasAnlei = false;
     for(let i = 0; i < list.length; i++){
       if(list[i].name === '暗雷'){ hasAnlei = true; break; }
@@ -3226,7 +3420,7 @@ body.rotate.rot-tiny main.duo .pool-scroll{
     iconFailCount = 0;
     if(mode === 'duo') duo = newDuo();
     refresh();
-    setStatus(statusMsg, statusType);
+    if(statusMsg) setStatus(statusMsg, statusType);
   }
 
   function applyDefaultData(){
@@ -3357,10 +3551,8 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       e.target.value = '';
     });
 
-    /* ★ 导出 xlsx */
     document.getElementById('exportBtn').addEventListener('click', exportXlsx);
 
-    /* ★ 导出精灵池：根据下拉框格式分发到 ZIP 或图片导出 */
     const fmtSelect = document.getElementById('exportFormat');
     const expImgBtn = document.getElementById('exportImgBtn');
 
@@ -3381,12 +3573,10 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       }
     });
 
-    /* ★ 模式切换 */
     modeBtn.addEventListener('click', function(){
       setMode(mode === 'duo' ? 'solo' : 'duo');
     });
 
-    /* ★ 玩家名称：点击面板标题即可改名 */
     [[0, p1Panel], [1, p2Panel]].forEach(function(item){
       const pi = item[0];
       const h2 = item[1].querySelector('.panel-head h2');
@@ -3396,10 +3586,7 @@ body.rotate.rot-tiny main.duo .pool-scroll{
       h2.addEventListener('click', function(){ openNameEditor(pi); });
     });
 
-    /* ★ 初始化右上角图标缩放按钮 */
     initIconZoom();
-
-    /* ★ 初始化底栏高度（供横屏容器使用） */
     syncFootHeight();
 
     maxCostInput.value = maxCost;
