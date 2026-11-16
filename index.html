@@ -15,7 +15,7 @@ function loadFallbackXLSX(){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="loadFallbackXLSX()"></script>
 
-<!-- JSZip：主 CDN 失败自动切换备用 CDN -->
+<!-- JSZip：主 CDN 失败自动切换备用 CDN（保留库加载，避免引用报错） -->
 <script>
 function loadFallbackJSZip(){
   var s = document.createElement('script');
@@ -517,7 +517,7 @@ footer .line{
   box-shadow:0 0 20px rgba(255,210,63,.4);
 }
 
-/* ★ 导出图片/压缩包按钮：青色强调 */
+/* ★ 导出图片按钮：青色强调 */
 .file-btn.png{
   border-color:rgba(95,240,208,.55);
   color:#b8fff0;
@@ -528,6 +528,28 @@ footer .line{
   border-color:#7fffe0;color:#fff;
   background:rgba(14,86,76,.9);
   box-shadow:0 0 20px rgba(95,240,208,.4);
+}
+
+/* ★ 对战模式按钮：赤红强调 */
+.file-btn.battle{
+  border-color:rgba(255,110,110,.55);
+  color:#ffc9c9;
+  background:rgba(76,16,16,.75);
+  text-shadow:0 0 10px rgba(255,110,110,.55);
+}
+.file-btn.battle:hover{
+  border-color:#ff6b6b;color:#fff;
+  background:rgba(110,24,24,.9);
+  box-shadow:0 0 20px rgba(255,80,80,.45);
+}
+.file-btn.battle.on{
+  background:linear-gradient(135deg, rgba(150,30,30,.95), rgba(110,16,60,.9));
+  border-color:#ff6b6b;color:#fff;
+  animation:battlePulse 1.8s ease-in-out infinite;
+}
+@keyframes battlePulse{
+  0%,100%{box-shadow:0 0 16px rgba(255,80,80,.45);}
+  50%{box-shadow:0 0 28px rgba(255,80,80,.85);}
 }
 
 /* ★ 导出格式选择下拉 */
@@ -557,39 +579,6 @@ footer .line{
 .format-select option{
   background:#0a1330;
   color:#bfe0ff;
-}
-
-/* ★ 骰子按钮 */
-.dice-btn{
-  pointer-events:auto;
-  display:inline-flex;align-items:center;gap:9px;
-  padding:8px 20px 8px 12px;border-radius:99px;cursor:pointer;
-  background:rgba(58,28,96,.8);
-  border:1px solid rgba(180,130,255,.5);
-  color:#e6d9ff;font-size:13.5px;letter-spacing:2px;
-  text-shadow:0 0 10px rgba(180,130,255,.6);
-  transition:.2s;white-space:nowrap;font-family:inherit;
-  flex:0 0 auto;
-}
-.dice-btn:hover{
-  border-color:#c9a0ff;color:#fff;
-  background:rgba(82,42,138,.9);
-  box-shadow:0 0 22px rgba(180,130,255,.45);
-}
-.dice-btn:active{transform:scale(.97);}
-.dice-btn .dice-face{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:26px;height:26px;border-radius:8px;
-  background:linear-gradient(160deg,#ffffff,#d8d2ff);
-  color:#220b3a;font-weight:800;font-size:15px;
-  box-shadow:0 0 12px rgba(255,255,255,.4);
-  transition:transform .12s;
-}
-.dice-btn.rolling .dice-face{animation:diceSpin .16s linear infinite;}
-@keyframes diceSpin{
-  0%{transform:rotate(0deg) scale(1);}
-  50%{transform:rotate(180deg) scale(1.25);}
-  100%{transform:rotate(360deg) scale(1);}
 }
 
 /* ============ ★ 双人模式布局 ============ */
@@ -829,6 +818,107 @@ main.duo .card .tag-p2{top:21px;}
   box-shadow:0 0 26px rgba(95,240,208,.4);
 }
 
+/* ==========================================================
+   ★★★ 对战模式（敌方阵容）样式 ★★★
+   ========================================================== */
+main.battle #soloPanel .limit-row,
+main.battle #soloPanel .bar,
+main.battle #soloPanel .actions{display:none;}
+
+main.battle #soloPanel{
+  border-color:rgba(255,110,110,.28);
+  box-shadow:0 0 34px rgba(200,40,40,.14), inset 0 0 60px rgba(200,40,40,.06);
+}
+main.battle #soloPanel .panel-head h2{
+  color:#ff9a9a;
+  text-shadow:0 0 12px rgba(255,90,90,.55);
+}
+main.battle #soloPanel .panel-head h2::before{color:#ff6b6b;}
+main.battle #soloPanel .total-row{color:#ffb0b0;}
+main.battle #soloPanel .total-row b{
+  color:#ff8a8a;
+  text-shadow:0 0 16px rgba(255,90,90,.6);
+}
+main.battle #soloPanel #count{color:#ff9a9a !important;}
+
+/* 敌方阵容槽位 */
+main.battle #soloPanel .slot.filled{
+  background:linear-gradient(160deg, rgba(84,26,26,.55), rgba(40,10,10,.78));
+  border-color:rgba(255,110,110,.3);
+  box-shadow:inset 0 0 22px rgba(255,90,90,.1);
+}
+main.battle #soloPanel .slot.filled.enemy:not(.is-dark):hover{
+  border-color:rgba(255,150,150,.8);
+  box-shadow:inset 0 0 22px rgba(255,90,90,.2), 0 0 16px rgba(255,80,80,.32);
+}
+main.battle #soloPanel .slot.filled.is-dark{
+  background:linear-gradient(160deg, rgba(40,34,58,.5), rgba(18,14,30,.72));
+  border-color:rgba(140,130,190,.24);
+  box-shadow:none;
+  cursor:default;
+}
+
+/* 状态色描边 */
+main.battle #soloPanel .slot.s-dead{border-color:rgba(255,90,90,.75);}
+main.battle #soloPanel .slot.s-heavy{border-color:rgba(255,169,63,.75);}
+main.battle #soloPanel .slot.s-hurt{border-color:rgba(255,90,120,.75);}
+
+/* ★ 状态标记：无外圈，直接叠加在精灵图标上（放大 + 半透明填充，仍可辨识精灵） */
+.status-badge{
+  position:absolute;left:50%;top:50%;z-index:6;
+  width:60px;height:60px;
+  transform:translate(-50%,-50%);
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.85)) drop-shadow(0 0 7px currentColor);
+}
+.status-badge svg{width:54px;height:54px;display:block;}
+.status-badge.dead{color:#ff3b3b;}
+.status-badge.heavy{color:#ffa93f;}
+.status-badge.hurt{color:#ff4d6a;}
+
+/* ★ 悬停浮现的三个状态按钮（已放大，位于图标中央，不遮挡辨识主体时仅悬停出现） */
+.enemy-tools{
+  position:absolute;left:50%;top:45%;z-index:9;
+  transform:translate(-50%,-50%);
+  display:none;gap:7px;
+  padding:5px 6px;border-radius:12px;
+  background:rgba(6,12,28,.94);
+  border:1px solid rgba(110,170,255,.38);
+  box-shadow:0 8px 26px rgba(0,0,0,.7);
+  white-space:nowrap;
+  opacity:0;
+}
+.slot.enemy:hover .enemy-tools{
+  display:flex;
+  opacity:1;
+}
+.enemy-tools button{
+  flex:0 0 auto;
+  width:42px;height:42px;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:10px;cursor:pointer;
+  background:rgba(20,32,60,.94);
+  border:1px solid rgba(110,170,255,.32);
+  color:#cfe3ff;
+  transition:.15s;
+}
+.enemy-tools button svg{width:28px;height:28px;display:block;}
+.enemy-tools button:hover{transform:scale(1.12);}
+.enemy-tools button.t-dead:hover{
+  border-color:#ff3b3b;color:#ff3b3b;
+  box-shadow:0 0 14px rgba(255,60,60,.7);
+}
+.enemy-tools button.t-heavy:hover{
+  border-color:#ffa93f;color:#ffa93f;
+  box-shadow:0 0 14px rgba(255,169,63,.7);
+}
+.enemy-tools button.t-hurt:hover{
+  border-color:#ff4d6a;color:#ff4d6a;
+  box-shadow:0 0 14px rgba(255,77,106,.7);
+}
+.enemy-tools button.active{background:rgba(60,70,110,.96);}
+
 /* ============ ★ 图标缩放（右上角按钮控制） ============ */
 :root{ --is:1; }
 
@@ -912,7 +1002,7 @@ body.rotate{
   background-attachment:scroll;
 }
 
-/* ★ 横屏模式隐藏底栏（双人模式 / 导出 / 骰子 / 提示语等全部隐藏） */
+/* ★ 横屏模式隐藏底栏（双人模式 / 导出 / 提示语等全部隐藏） */
 body.rotate footer{display:none !important;}
 
 body.rotate #rotWrap{
@@ -1135,6 +1225,17 @@ body.rotate .duo-slots .slot .cost{
 body.rotate .duo-slots .slot .ban-mark::before{width:20px;height:20px;border-width:3px;}
 body.rotate .duo-slots .slot .ban-mark::after{width:26px;height:3px;}
 
+/* ★ 对战模式在横屏下的紧凑化（仍保持较大尺寸） */
+body.rotate .status-badge{
+  width:44px;height:44px;
+}
+body.rotate .status-badge svg{width:38px;height:38px;}
+body.rotate .enemy-tools{
+  padding:4px 5px;gap:5px;border-radius:9px;
+}
+body.rotate .enemy-tools button{width:32px;height:32px;border-radius:8px;}
+body.rotate .enemy-tools button svg{width:22px;height:22px;}
+
 /* ---------- 旋转模式下锁定交互（防止误触） ---------- */
 body.rotate .card .cost{pointer-events:none;}
 body.rotate .card .cost:hover{transform:none;filter:none;}
@@ -1266,7 +1367,7 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
     <div id="status" class="status">正在读取 197.xlsx …</div>
   </section>
 
-  <!-- 单人模式阵容 -->
+  <!-- 单人模式阵容 / 对战模式敌方阵容 -->
   <aside class="panel" id="soloPanel">
     <div class="panel-head">
       <h2>出战阵容</h2>
@@ -1379,19 +1480,16 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
 <footer>
   <div class="foot-inner">
     <span class="line">适度游戏益脑，沉迷游戏伤身。</span>
-    <button id="diceBtn" class="dice-btn" type="button">
-      <span class="dice-face" id="diceFace">?</span>
-      <span>骰子</span>
-    </button>
+    <button id="battleBtn" class="file-btn battle" type="button">对战模式</button>
     <button id="modeBtn" class="file-btn" type="button">双人模式</button>
     <button id="exportBtn" class="file-btn export" type="button">导出 .xlsx</button>
-    <select id="exportFormat" class="format-select" title="选择导出格式">
-      <option value="zip">ZIP 压缩包</option>
+    <!-- ★ ZIP 与精灵池图片导出按钮已隐藏 -->
+    <select id="exportFormat" class="format-select" title="选择导出格式" style="display:none">
       <option value="image/webp">WebP 图片</option>
       <option value="image/jpeg">JPEG 图片</option>
       <option value="image/png">PNG 图片</option>
     </select>
-    <button id="exportImgBtn" class="file-btn png" type="button">导出精灵池 ZIP</button>
+    <button id="exportImgBtn" class="file-btn png" type="button" style="display:none">导出精灵池图片</button>
     <label class="file-btn" for="fileInput">手动选择 .xlsx</label>
     <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
   </div>
@@ -1490,6 +1588,60 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
 
   let mode = 'solo';
   let duo = null;
+
+  /* ★ 对战模式状态 */
+  let battle = { on: false, team: [], status: [] };
+
+  const BATTLE_STATUS = {
+    dead:  { cls: 'dead',  label: '死亡' },
+    heavy: { cls: 'heavy', label: '大残' },
+    hurt:  { cls: 'hurt',  label: '受伤' }
+  };
+
+  /* ★ 状态图标（无外圈，直接叠加在精灵图标上）
+     - 死亡：红色禁止符号（圆圈 + 斜杠）
+     - 大残：爱心碎裂两半（心形 + 中间锯齿裂缝）
+     - 受伤：血滴（水滴形 + 内部高光）
+  */
+  const ICON_SVG = {
+    dead:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" ' +
+      'stroke-linecap="round">' +
+      '<circle cx="12" cy="12" r="8.6"/>' +
+      '<path d="M6 6l12 12"/></svg>',
+    heavy:
+      '<svg viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.22" stroke="currentColor" ' +
+      'stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round">' +
+      '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>' +
+      '<path d="M12 5.4 L10.3 8.3 L13.1 10.5 L10.1 12.9 L12.9 15.3 L10.7 17.9 L12 21" ' +
+      'fill="none" stroke-width="1.8"/></svg>',
+    hurt:
+      '<svg viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.30" stroke="currentColor" ' +
+      'stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round">' +
+      '<path d="M12 2.6C12 2.6 4.7 10.7 4.7 15.1a7.3 7.3 0 0 0 14.6 0C19.3 10.7 12 2.6 12 2.6Z"/>' +
+      '<path d="M8.9 15.5a3.3 3.3 0 0 0 2.5 3" fill="none" stroke-width="1.5" stroke-opacity="0.8"/>' +
+      '</svg>'
+  };
+
+  function darkThunderIndex(){
+    for(let i = 0; i < pets.length; i++){
+      if(pets[i] && pets[i].name === '暗雷') return i;
+    }
+    for(let i = 0; i < pets.length; i++){
+      if(pets[i] && typeof pets[i].name === 'string' && pets[i].name.indexOf('暗雷') !== -1) return i;
+    }
+    return -1;
+  }
+
+  function resetBattleTeam(){
+    const di = darkThunderIndex();
+    battle.team = [];
+    battle.status = [];
+    for(let k = 0; k < MAX_PICK; k++){
+      battle.team.push(di >= 0 ? di : null);
+      battle.status.push(null);
+    }
+  }
 
   function cloneDuoSettings(s){
     const nm = (s && s.names && s.names.length >= 2) ? s.names : DUO_DEFAULT_SETTINGS.names;
@@ -1624,6 +1776,10 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
   const modeBtn        = document.getElementById('modeBtn');
   const subTitleEl     = document.getElementById('subTitle');
   const footerEl       = document.querySelector('footer');
+
+  /* ★ 新增：对战模式相关元素 */
+  const battleBtn      = document.getElementById('battleBtn');
+  const soloPanel      = document.getElementById('soloPanel');
 
   const duoModal   = document.getElementById('duoModal');
   const mName1In   = document.getElementById('mName1');
@@ -1851,6 +2007,195 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
     container.appendChild(frag);
   }
 
+  /* ================= ★ 对战模式：敌方阵容渲染 ================= */
+  function renderBattleTeam(){
+    slotsEl.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    const darkIdx = darkThunderIndex();
+
+    for(let k = 0; k < MAX_PICK; k++){
+      const idx = battle.team[k];
+      const p = (idx === null || idx === undefined) ? null : pets[idx];
+      const slot = document.createElement('div');
+
+      if(!p){
+        slot.className = 'slot empty';
+        slot.textContent = '＋';
+        frag.appendChild(slot);
+        continue;
+      }
+
+      const isDark = (idx === darkIdx);
+      const st = battle.status[k] || null;
+
+      slot.className = 'slot filled enemy'
+        + (isDark ? ' is-dark' : '')
+        + (st ? ' s-' + BATTLE_STATUS[st].cls : '');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'icon-wrap';
+      wrap.dataset.initial = p.name.slice(0, 1);
+
+      const img = document.createElement('img');
+      img.alt = p.name;
+      img.draggable = false;
+      loadIcon(img, p.name);
+      wrap.appendChild(img);
+
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = p.name;
+
+      const cost = document.createElement('div');
+      cost.className = 'cost';
+      cost.textContent = p.cost;
+      paintCost(cost, p.cost);
+
+      slot.appendChild(wrap);
+      slot.appendChild(name);
+      slot.appendChild(cost);
+
+      /* ★ 状态标记：无外圈，居中覆盖在精灵图标上 */
+      if(st && !isDark){
+        const badge = document.createElement('div');
+        badge.className = 'status-badge ' + BATTLE_STATUS[st].cls;
+        badge.innerHTML = ICON_SVG[st];
+        badge.title = BATTLE_STATUS[st].label + '（右键可去除）';
+        slot.appendChild(badge);
+      }
+
+      if(!isDark){
+        /* ★ 悬停浮现的三个状态按钮（已放大） */
+        const tools = document.createElement('div');
+        tools.className = 'enemy-tools';
+
+        Object.keys(BATTLE_STATUS).forEach(function(key){
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 't-' + key + (st === key ? ' active' : '');
+          b.title = BATTLE_STATUS[key].label;
+          b.innerHTML = ICON_SVG[key];
+          b.addEventListener('mousedown', function(ev){ ev.stopPropagation(); });
+          b.addEventListener('click', function(ev){
+            ev.stopPropagation();
+            ev.preventDefault();
+            setBattleStatus(k, key);
+          });
+          tools.appendChild(b);
+        });
+
+        slot.appendChild(tools);
+
+        /* ★ 左键点击整块槽位 → 换回暗雷 */
+        slot.title = '点击可将「' + p.name + '」替换回「暗雷」 · 右键去除状态标记';
+        (function(slotIndex){
+          slot.addEventListener('click', function(){ resetBattleSlot(slotIndex); });
+        })(k);
+
+        /* ★ 右键整块槽位 → 去除状态标记 */
+        (function(slotIndex, petName){
+          slot.addEventListener('contextmenu', function(ev){
+            ev.preventDefault();
+            ev.stopPropagation();
+            if(!battle.on) return;
+            if(!battle.status[slotIndex]){
+              toast('「' + petName + '」暂无状态标记');
+              return;
+            }
+            battle.status[slotIndex] = null;
+            refresh();
+            toast('已去除「' + petName + '」的状态标记');
+          });
+        })(k, p.name);
+      }else{
+        slot.title = p.name;
+      }
+
+      frag.appendChild(slot);
+    }
+
+    slotsEl.appendChild(frag);
+
+    /* 统计 */
+    let cnt = 0, sum = 0;
+    for(let k = 0; k < MAX_PICK; k++){
+      const idx = battle.team[k];
+      if(idx === null || idx === undefined) continue;
+      const p2 = pets[idx];
+      if(!p2) continue;
+      cnt++;
+      sum += p2.cost;
+    }
+    countEl.textContent = cnt + ' / ' + MAX_PICK;
+    totalEl.textContent = sum;
+    totalEl.classList.remove('warn', 'over');
+    maxCostDisplay.textContent = maxCost;
+  }
+
+  function setBattleStatus(k, key){
+    if(!battle.on) return;
+    const idx = battle.team[k];
+    const p = pets[idx];
+    if(!p) return;
+
+    if(battle.status[k] === key){
+      battle.status[k] = null;
+      refresh();
+      toast('已取消「' + p.name + '」的状态标记');
+      return;
+    }
+
+    battle.status[k] = key;
+    refresh();
+    toast('「' + p.name + '」标记为 ' + BATTLE_STATUS[key].label, true);
+  }
+
+  function resetBattleSlot(k){
+    if(!battle.on) return;
+    const di = darkThunderIndex();
+    if(di < 0){ toast('数据中未找到「暗雷」，无法替换'); return; }
+
+    const old = pets[battle.team[k]];
+    if(!old) return;
+    if(battle.team[k] === di){ return; }
+
+    battle.team[k] = di;
+    battle.status[k] = null;
+    refresh();
+    toast('已将「' + old.name + '」替换为「暗雷」');
+  }
+
+  function battlePick(i){
+    const di = darkThunderIndex();
+    if(i === di){
+      toast('「暗雷」已是默认占位精灵，无需放入');
+      return;
+    }
+    if(di < 0){
+      toast('数据中未找到「暗雷」，无法使用对战模式');
+      return;
+    }
+
+    let slot = -1;
+    for(let k = 0; k < MAX_PICK; k++){
+      if(battle.team[k] === di && !battle.status[k]){ slot = k; break; }
+    }
+    if(slot === -1){
+      for(let k = 0; k < MAX_PICK; k++){
+        if(battle.team[k] === di){ slot = k; break; }
+      }
+    }
+    if(slot === -1){
+      toast('敌方阵容已满，请先点击敌方精灵换回「暗雷」');
+      return;
+    }
+
+    battle.team[slot] = i;
+    battle.status[slot] = null;
+    refresh();
+    toast('已将「' + pets[i].name + '」放入敌方阵容', true);
+  }
+
   /* ================= ★ 费用就地编辑（横屏下锁定） ================= */
   function openCostEditor(card, i, costEl){
     if(isRotateMode()){
@@ -1998,11 +2343,16 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
     const cls = ['card'];
 
     if(mode === 'solo'){
-      cnt = countOf(i);
-      isSel = cnt > 0;
-      const canRemove = !repeatable && isSel;
-      blocked = !canRemove && (soloFull || soloTotal + p.cost > maxCost);
-      if(isSel) cls.push('selected');
+      if(battle.on){
+        /* ★ 对战模式下精灵池不做费用/人数限制 */
+        blocked = false;
+      }else{
+        cnt = countOf(i);
+        isSel = cnt > 0;
+        const canRemove = !repeatable && isSel;
+        blocked = !canRemove && (soloFull || soloTotal + p.cost > maxCost);
+        if(isSel) cls.push('selected');
+      }
     }else{
       const c1 = countIn(duo.teams[0], i);
       const c2 = countIn(duo.teams[1], i);
@@ -2154,6 +2504,11 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
 
   /* ================= 渲染单人阵容 ================= */
   function renderTeam(){
+    if(battle.on){
+      renderBattleTeam();
+      return;
+    }
+
     renderSlots(slotsEl, selected, MAX_PICK, {
       hoverable: true,
       onClick: removeOne
@@ -2381,6 +2736,9 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
   }
 
   function toggle(i){
+    /* ★ 对战模式：点精灵池 → 放入敌方阵容 */
+    if(battle.on){ battlePick(i); return; }
+
     const p = pets[i];
     if(!p) return;
 
@@ -2534,9 +2892,61 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
     refresh();
   }
 
+  /* ================= ★ 对战模式开关 ================= */
+  function setBattle(on){
+    if(on === battle.on) return;
+
+    /* 对战模式与双人模式互斥 */
+    if(on && mode === 'duo'){
+      mode = 'solo';
+      duo = null;
+      closeDuoModal();
+      mainEl.classList.remove('duo');
+      modeBtn.textContent = '双人模式';
+    }
+
+    battle.on = on;
+
+    if(on){
+      resetBattleTeam();
+      mainEl.classList.add('battle');
+      if(battleBtn){
+        battleBtn.textContent = '退出对战';
+        battleBtn.classList.add('on');
+      }
+      const h2 = soloPanel.querySelector('.panel-head h2');
+      if(h2) h2.textContent = '敌方阵容';
+      subTitleEl.textContent = '对战模式 · 点击精灵池中的精灵放入敌方阵容 · 悬停可标记状态 · 右键去除标记 · 左键敌方精灵可换回暗雷';
+    }else{
+      mainEl.classList.remove('battle');
+      if(battleBtn){
+        battleBtn.textContent = '对战模式';
+        battleBtn.classList.remove('on');
+      }
+      const h2 = soloPanel.querySelector('.panel-head h2');
+      if(h2) h2.textContent = '出战阵容';
+      subTitleEl.textContent = '挑选最多 6 只精灵 · 仅「任意幼年体精灵」可重复选择';
+    }
+
+    refresh();
+  }
+
   /* ================= 模式切换 ================= */
   function setMode(m){
     if(m === mode) return;
+
+    /* ★ 切到双人模式前先退出对战模式 */
+    if(battle.on){
+      battle.on = false;
+      mainEl.classList.remove('battle');
+      if(battleBtn){
+        battleBtn.textContent = '对战模式';
+        battleBtn.classList.remove('on');
+      }
+      const h2 = soloPanel.querySelector('.panel-head h2');
+      if(h2) h2.textContent = '出战阵容';
+    }
+
     mode = m;
 
     if(mode === 'duo'){
@@ -3031,7 +3441,7 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
       console.error(err);
       const msg = String((err && err.message) || err);
       if(err && (err.name === 'SecurityError' || /taint|security|insecure/i.test(msg))){
-        toast('图片导出受浏览器安全限制，请改用「ZIP 压缩包」导出');
+        toast('图片导出受浏览器安全限制，请改用其他方式导出');
       }else{
         toast('导出失败：' + msg);
       }
@@ -3041,7 +3451,7 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
     }
   }
 
-  /* ================= ★ 导出精灵池 ZIP ================= */
+  /* ================= ★ 导出精灵池 ZIP（已停用按钮，函数保留备用） ================= */
   function sanitizeFileName(name){
     return String(name).replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').replace(/\s+/g, ' ').trim() || '未命名';
   }
@@ -3092,543 +3502,269 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
   }
 
   async function exportPoolZip(){
-    if(typeof JSZip === 'undefined'){
-      toast('压缩库尚未加载完成，请稍后重试');
-      return;
-    }
-    if(!pets.length){
-      toast('暂无精灵数据，无法导出');
-      return;
-    }
+    /* 底部按钮已移除，此函数仅作保留，不再被任何按钮触发 */
+    toast('ZIP 导出功能已移除');
+  }
 
-    const q = query.trim().toLowerCase();
-    const groups = new Map();
-    for(let i = 0; i < pets.length; i++){
-      const p = pets[i];
-      if(q && p.name.toLowerCase().indexOf(q) === -1) continue;
-      if(!groups.has(p.cost)) groups.set(p.cost, []);
-      groups.get(p.cost).push(p);
-    }
-    if(!groups.size){
-      toast('当前筛选结果为空，无法导出');
-      return;
-    }
+  /* ================= 事件绑定（防重复 / 空值保护） ================= */
+  if(battleBtn){
+    battleBtn.addEventListener('click', function(){
+      setBattle(!battle.on);
+    });
+  }
 
-    const btn = document.getElementById('exportImgBtn');
-    const oldLabel = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '正在打包…';
+  /* ★ 导出精灵池图片按钮（按钮已隐藏） */
+  const exportImgBtnEl = document.getElementById('exportImgBtn');
+  const exportFormatEl = document.getElementById('exportFormat');
+  if(exportImgBtnEl){
+    exportImgBtnEl.addEventListener('click', function(){
+      const fmt = exportFormatEl ? exportFormatEl.value : 'image/webp';
+      exportPoolImage(fmt);
+    });
+  }
 
+  if(document.getElementById('exportBtn')){
+    document.getElementById('exportBtn').addEventListener('click', exportXlsx);
+  }
+
+  /* ================= 启动：载入数据 ================= */
+  function parseTextData(text){
+    const rows = [];
+    String(text).split(/\r?\n/).forEach(function(line){
+      const s = line.trim();
+      if(!s) return;
+      const parts = s.split(/[\t,，]+/);
+      if(parts.length < 2) return;
+      const name = parts[0].trim();
+      const cost = parseInt(parts[1], 10);
+      if(!name || !isFinite(cost)) return;
+      rows.push({ name: name, cost: Math.max(0, cost) });
+    });
+    return rows;
+  }
+
+  async function tryLoadXlsx(){
+    if(typeof XLSX === 'undefined') return null;
     try{
-      const costs = Array.from(groups.keys()).sort(function(a, b){ return a - b; });
-      const all = [];
-      costs.forEach(function(c){
-        groups.get(c).forEach(function(p){ all.push({ p: p, cost: c }); });
+      const res = await fetchWithTimeout(XLSX_FILE, 4000);
+      if(!res.ok) return null;
+      const buf = await res.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      if(!ws) return null;
+      const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false });
+      const out = [];
+      aoa.forEach(function(r){
+        if(!r || r.length < 2) return;
+        const name = String(r[0] == null ? '' : r[0]).trim();
+        const cost = parseInt(r[1], 10);
+        if(!name || !isFinite(cost)) return;
+        if(name === '精灵名' || name === '精灵' || name === '名称') return;
+        out.push({ name: name, cost: Math.max(0, cost) });
       });
-
-      const zip = new JSZip();
-      const CONCURRENCY = 6;
-      let cursor = 0;
-      let doneCount = 0;
-      let okCount = 0;
-      let failCount = 0;
-      const manifest = [];
-
-      async function worker(){
-        while(true){
-          const idx = cursor++;
-          if(idx >= all.length) return;
-
-          const item = all[idx];
-          const p = item.p;
-          const res = await fetchIconBlob(p.name);
-
-          let filePath = '';
-          if(res){
-            const dir = item.cost + '费';
-            const fname = sanitizeFileName(p.name) + '.' + res.ext;
-            filePath = dir + '/' + fname;
-            let finalPath = filePath;
-            let n = 2;
-            while(zip.file(finalPath)){
-              finalPath = dir + '/' + sanitizeFileName(p.name) + '_' + n + '.' + res.ext;
-              n++;
-            }
-            zip.file(finalPath, res.blob);
-            filePath = finalPath;
-            okCount++;
-          }else{
-            failCount++;
-          }
-
-          manifest.push({
-            cost: item.cost,
-            name: p.name,
-            file: filePath || '（未找到图标文件）'
-          });
-
-          doneCount++;
-          btn.textContent = '打包中 ' + doneCount + '/' + all.length + ' …';
-        }
-      }
-
-      const workers = [];
-      const workerCount = Math.min(CONCURRENCY, all.length);
-      for(let i = 0; i < workerCount; i++) workers.push(worker());
-      await Promise.all(workers);
-
-      manifest.sort(function(a, b){
-        if(a.cost !== b.cost) return a.cost - b.cost;
-        return a.name.localeCompare(b.name, 'zh');
-      });
-
-      const d = new Date();
-      const pad = function(n){ return String(n).padStart(2, '0'); };
-      const timeStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
-                    + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
-      const stamp = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate())
-                  + '_' + pad(d.getHours()) + pad(d.getMinutes());
-
-      const lines = [];
-      lines.push('精灵池清单');
-      lines.push('========================================');
-      lines.push('生成时间：' + timeStr);
-      lines.push('筛选条件：' + (q ? query.trim() : '（无）'));
-      lines.push('精灵总数：' + all.length + '（图标成功 ' + okCount + '，未找到 ' + failCount + '）');
-      lines.push('');
-      lines.push('说明：');
-      lines.push('  · 图标文件按「费用」分组存放在对应文件夹中（如 “0费/钢牙鲨.png”）。');
-      lines.push('  · 未找到的图标在下方清单中标注，可自行补充到 icon/ 文件夹。');
-      lines.push('');
-      lines.push('费用\t精灵名\t图标文件');
-      manifest.forEach(function(r){
-        lines.push(r.cost + '\t' + r.name + '\t' + r.file);
-      });
-      zip.file('精灵池清单.txt', lines.join('\n'));
-
-      const csvLines = ['费用,精灵名,图标文件'];
-      manifest.forEach(function(r){
-        const esc = function(s){ return '"' + String(s).replace(/"/g, '""') + '"'; };
-        csvLines.push([r.cost, r.name, r.file].map(esc).join(','));
-      });
-      zip.file('精灵池清单.csv', '\ufeff' + csvLines.join('\r\n'));
-
-      btn.textContent = '正在压缩…';
-      const blob = await zip.generateAsync({
-        type: 'blob',
-        compression: 'STORE'
-      });
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = '精灵池_' + stamp + '.zip';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
-
-      if(failCount === 0){
-        toast('已导出 ZIP：' + all.length + ' 只精灵（图标 ' + okCount + ' 个 + 清单）', true);
-      }else if(okCount === 0){
-        toast('已导出 ZIP：仅含清单（图标读取失败，请用本地服务器打开本页后重试）');
-      }else{
-        toast('已导出 ZIP：图标 ' + okCount + ' 个，未找到 ' + failCount + ' 个（见清单）', true);
-      }
-    }catch(err){
-      console.error(err);
-      toast('打包失败：' + ((err && err.message) || err));
-    }finally{
-      btn.disabled = false;
-      btn.textContent = oldLabel;
+      return out.length ? out : null;
+    }catch(e){
+      return null;
     }
   }
 
-  /* ================= 单人费用上限 ================= */
-  function applyMaxCost(){
-    let v = parseFloat(maxCostInput.value);
-    if(!isFinite(v) || v < 1) v = 1;
-    if(v > MAX_COST_LIMIT) v = MAX_COST_LIMIT;
-    v = Math.round(v);
-    maxCost = v;
-    maxCostInput.value = v;
+  (async function boot(){
+    let data = null;
+    if(typeof XLSX !== 'undefined'){
+      setStatus('正在读取 ' + XLSX_FILE + ' …');
+      data = await tryLoadXlsx();
+    }
+    if(!data){
+      setStatus('未找到 ' + XLSX_FILE + '，已载入内置默认数据（可手动选择文件）', 'ok');
+      data = parseTextData(DEFAULT_TEXT);
+    }else{
+      setStatus('已载入 ' + data.length + ' 只精灵', 'ok');
+    }
+    pets = data;
+    maxCostInput.value = maxCost;
+    maxCostDisplay.textContent = maxCost;
     refresh();
+  })();
+
+  /* ★ 手动选择文件 */
+  const fileInput = document.getElementById('fileInput');
+  if(fileInput){
+    fileInput.addEventListener('change', function(){
+      const f = fileInput.files && fileInput.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = function(ev){
+        try{
+          const buf = ev.target.result;
+          if(typeof XLSX === 'undefined'){
+            toast('解析库尚未加载完成，请稍后重试');
+            return;
+          }
+          const wb = XLSX.read(buf, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false });
+          const out = [];
+          aoa.forEach(function(r){
+            if(!r || r.length < 2) return;
+            const name = String(r[0] == null ? '' : r[0]).trim();
+            const cost = parseInt(r[1], 10);
+            if(!name || !isFinite(cost)) return;
+            if(name === '精灵名' || name === '精灵' || name === '名称') return;
+            out.push({ name: name, cost: Math.max(0, cost) });
+          });
+          if(!out.length){
+            toast('文件中没有可用的精灵数据');
+            return;
+          }
+          pets = out;
+          selected = [];
+          if(battle.on) resetBattleTeam();
+          setStatus('已载入 ' + pets.length + ' 只精灵（来自 ' + f.name + '）', 'ok');
+          refresh();
+          toast('已载入 ' + pets.length + ' 只精灵', true);
+        }catch(err){
+          console.error(err);
+          toast('读取失败：' + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(f);
+    });
   }
 
-  maxCostInput.addEventListener('input', function(){
-    clearTimeout(maxCostTimer);
-    maxCostTimer = setTimeout(function(){
-      const v = parseFloat(maxCostInput.value);
-      if(!isFinite(v) || v < 1) return;
-      maxCost = Math.min(MAX_COST_LIMIT, Math.round(v));
-      refresh();
-    }, 220);
-  });
+  /* ★ 搜索 */
+  const searchEl = document.getElementById('search');
+  if(searchEl){
+    searchEl.addEventListener('input', function(){
+      query = searchEl.value;
+      renderPool();
+    });
+  }
 
-  maxCostInput.addEventListener('blur', function(){
-    clearTimeout(maxCostTimer);
-    applyMaxCost();
-  });
-
-  maxCostInput.addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){
+  /* ★ 费用上限 */
+  if(maxCostInput){
+    maxCostInput.addEventListener('input', function(){
       clearTimeout(maxCostTimer);
-      applyMaxCost();
-      maxCostInput.blur();
-    }
-  });
-
-  /* ================= ★ 骰子 ================= */
-  const diceBtn   = document.getElementById('diceBtn');
-  const diceFace  = document.getElementById('diceFace');
-  let diceRolling = false;
-
-  function rollDice(){
-    if(diceRolling) return;
-    diceRolling = true;
-    diceBtn.classList.add('rolling');
-
-    let elapsed = 0;
-    const timer = setInterval(function(){
-      diceFace.textContent = String(Math.floor(Math.random() * 6) + 1);
-      elapsed += 70;
-      if(elapsed >= 700){
-        clearInterval(timer);
-        const result = Math.floor(Math.random() * 6) + 1;
-        diceFace.textContent = String(result);
-        diceBtn.classList.remove('rolling');
-        diceRolling = false;
-        toast('🎲 掷出 ' + result + ' 点', true);
-      }
-    }, 70);
+      maxCostTimer = setTimeout(function(){
+        let v = parseInt(maxCostInput.value, 10);
+        if(!isFinite(v) || v < 1) v = 1;
+        if(v > MAX_COST_LIMIT) v = MAX_COST_LIMIT;
+        maxCost = v;
+        maxCostDisplay.textContent = maxCost;
+        if(!battle.on) renderTeam();
+        else renderBattleTeam();
+        renderPool();
+      }, 180);
+    });
   }
 
-  diceBtn.addEventListener('click', rollDice);
+  /* ★ 随机生成 / 清空 */
+  const randomBtn = document.getElementById('random');
+  if(randomBtn){
+    randomBtn.addEventListener('click', generateRandomTeam);
+  }
+  const clearBtn = document.getElementById('clear');
+  if(clearBtn){
+    clearBtn.addEventListener('click', function(){
+      selected = [];
+      refresh();
+      toast('阵容已清空');
+    });
+  }
 
-  /* ================= ★ 图标缩放 ================= */
-  const ICON_ZOOM_MIN  = 10;
-  const ICON_ZOOM_MAX  = 200;
-  const ICON_ZOOM_STEP = 10;
-  const ICON_ZOOM_KEY  = 'petIconScalePct';
+  /* ★ 玩家名称就地编辑 */
+  [p1Panel, p2Panel].forEach(function(panel, pi){
+    if(!panel) return;
+    const h2 = panel.querySelector('.panel-head h2');
+    if(!h2) return;
+    h2.classList.add('editable');
+    h2.addEventListener('click', function(){ openNameEditor(pi); });
+  });
 
-  function initIconZoom(){
-    const outBtn = document.getElementById('iconZoomOut');
-    const inBtn  = document.getElementById('iconZoomIn');
-    const valEl  = document.getElementById('iconZoomVal');
-    if(!outBtn || !inBtn || !valEl) return;
+  /* ★ 弹窗遮罩点击关闭 */
+  if(duoModal){
+    duoModal.addEventListener('click', function(e){
+      if(e.target === duoModal) closeDuoModal();
+    });
+  }
 
-    let pct = 100;
+  /* ★ 图标缩放控制 */
+  (function initIconZoom(){
+    const zoomInBtn  = document.getElementById('iconZoomIn');
+    const zoomOutBtn = document.getElementById('iconZoomOut');
+    const zoomValEl  = document.getElementById('iconZoomVal');
+    if(!zoomInBtn || !zoomOutBtn || !zoomValEl) return;
+
+    const STEPS = [0.6, 0.75, 0.85, 1, 1.15, 1.3, 1.5, 1.75, 2];
+    let si = 3;
+    const KEY = 'elfIconZoomIndex';
+
     try{
-      const v = parseInt(localStorage.getItem(ICON_ZOOM_KEY), 10);
-      if(isFinite(v)) pct = v;
+      const saved = parseInt(localStorage.getItem(KEY), 10);
+      if(isFinite(saved) && saved >= 0 && saved < STEPS.length) si = saved;
     }catch(e){}
-    pct = Math.min(ICON_ZOOM_MAX, Math.max(ICON_ZOOM_MIN,
-          Math.round(pct / ICON_ZOOM_STEP) * ICON_ZOOM_STEP));
 
     function apply(){
-      document.documentElement.style.setProperty('--is', String(pct / 100));
-      valEl.textContent = pct + '%';
-      outBtn.disabled = (pct <= ICON_ZOOM_MIN);
-      inBtn.disabled  = (pct >= ICON_ZOOM_MAX);
-      try{ localStorage.setItem(ICON_ZOOM_KEY, String(pct)); }catch(e){}
+      const v = STEPS[si];
+      document.documentElement.style.setProperty('--is', String(v));
+      zoomValEl.textContent = Math.round(v * 100) + '%';
+      zoomOutBtn.disabled = si <= 0;
+      zoomInBtn.disabled  = si >= STEPS.length - 1;
+      try{ localStorage.setItem(KEY, String(si)); }catch(e){}
     }
 
-    function setPct(v){
-      const n = Math.min(ICON_ZOOM_MAX, Math.max(ICON_ZOOM_MIN,
-                Math.round(v / ICON_ZOOM_STEP) * ICON_ZOOM_STEP));
-      if(n === pct) return;
-      pct = n;
-      apply();
-    }
-
-    outBtn.addEventListener('click', function(){ setPct(pct - ICON_ZOOM_STEP); });
-    inBtn.addEventListener('click',  function(){ setPct(pct + ICON_ZOOM_STEP); });
-
-    valEl.addEventListener('click', function(){
-      if(pct === 100) return;
-      pct = 100;
-      apply();
-      toast('图标大小已恢复 100%', true);
+    zoomInBtn.addEventListener('click', function(){
+      if(si < STEPS.length - 1){ si++; apply(); }
+    });
+    zoomOutBtn.addEventListener('click', function(){
+      if(si > 0){ si--; apply(); }
+    });
+    zoomValEl.addEventListener('click', function(){
+      si = 3; apply();
+      toast('精灵图标已恢复 100%', true);
     });
 
     apply();
-  }
+  })();
 
-  /* =========================================================
-     ★★★ 手机横屏模式（左上角「手机使用」按钮） ★★★
-     ========================================================= */
-  const mobileBtn = document.getElementById('mobileBtn');
-  let mobileMode = false;
+  /* ★ 手机横屏模式 */
+  (function initRotateMode(){
+    const btn = document.getElementById('mobileBtn');
+    if(!btn) return;
 
-  function syncFootHeight(){
-    const h = footerEl ? footerEl.offsetHeight : 0;
-    document.documentElement.style.setProperty('--foot-h', (h || 0) + 'px');
-  }
+    const KEY = 'elfRotateMode';
+    let on = false;
+    try{ on = localStorage.getItem(KEY) === '1'; }catch(e){}
 
-  /* 根据旋转后的实际尺寸自适应（兼容不同比例的手机） */
-  function updateMobileLayout(){
-    if(!mobileMode){
-      document.body.classList.remove('rot-sm', 'rot-tiny');
-      return;
-    }
-    const vh = window.innerHeight;
-    const vw = window.innerWidth;
-    const footH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--foot-h')) || 0;
-    const visW = vh - footH;
-    const visH = vw;
-    document.body.classList.toggle('rot-sm', visW < 700);
-    document.body.classList.toggle('rot-tiny', visH < 360);
-  }
-
-  function setMobileMode(on){
-    if(on === mobileMode) return;
-    mobileMode = on;
-
-    document.body.classList.toggle('rotate', on);
-    mobileBtn.classList.toggle('on', on);
-    mobileBtn.textContent = on ? '退出横屏' : '手机使用';
-    mobileBtn.title = on ? '退出手机横屏模式' : '切换手机横屏模式';
-
-    syncFootHeight();
-    updateMobileLayout();
-    initStars();
-
-    window.scrollTo(0, 0);
-
-    toast(on
-      ? '已切换为手机横屏模式（底栏已隐藏 · 已锁定费用 / 玩家名编辑）'
-      : '已退出手机横屏模式', true);
-  }
-
-  mobileBtn.addEventListener('click', function(){
-    setMobileMode(!mobileMode);
-  });
-
-  window.addEventListener('resize', function(){
-    syncFootHeight();
-    updateMobileLayout();
-  });
-
-  window.addEventListener('orientationchange', function(){
-    setTimeout(function(){
-      syncFootHeight();
-      updateMobileLayout();
-      initStars();
-    }, 260);
-  });
-
-  /* ================= 数据装载 ================= */
-  function commitList(list, statusMsg, statusType){
-    let hasAnlei = false;
-    for(let i = 0; i < list.length; i++){
-      if(list[i].name === '暗雷'){ hasAnlei = true; break; }
-    }
-    if(!hasAnlei) list.push({ name: '暗雷', cost: 0 });
-
-    pets = list;
-    selected = [];
-    iconFailCount = 0;
-    if(mode === 'duo') duo = newDuo();
-    refresh();
-    if(statusMsg) setStatus(statusMsg, statusType);
-  }
-
-  function applyDefaultData(){
-    const list = [];
-    const seen = Object.create(null);
-
-    DEFAULT_TEXT.trim().split('\n').forEach(function(line){
-      const parts = line.trim().split(/\s+/);
-      if(parts.length < 2) return;
-      const name = parts[0];
-      const cost = parseInt(parts[1], 10);
-      if(!name || !(cost >= 0)) return;
-      if(seen[name]) return;
-      seen[name] = true;
-      list.push({ name: name, cost: cost });
-    });
-
-    commitList(list);
-  }
-
-  function toNum(c){
-    if(typeof c === 'number') return isFinite(c) ? c : null;
-    if(typeof c === 'string'){
-      const s = c.trim();
-      if(/^-?\d+(\.\d+)?$/.test(s)) return parseFloat(s);
-    }
-    return null;
-  }
-
-  function applyWorkbook(wb){
-    const list = [];
-    const seen = Object.create(null);
-
-    wb.SheetNames.forEach(function(sn){
-      const ws = wb.Sheets[sn];
-      if(!ws) return;
-      let rows;
-      try{
-        rows = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: null });
-      }catch(e){ return; }
-
-      rows.forEach(function(row){
-        if(!row || !row.length) return;
-        const cells = row.filter(function(c){
-          return c !== null && c !== undefined && String(c).trim() !== '';
-        });
-        if(cells.length < 2) return;
-
-        let name = null;
-        for(let i = 0; i < cells.length; i++){
-          const c = cells[i];
-          if(typeof c === 'string' && c.trim() && toNum(c) === null){
-            name = c.trim();
-            break;
-          }
-        }
-        let cost = null;
-        for(let i = 0; i < cells.length; i++){
-          const n = toNum(cells[i]);
-          if(n !== null && n >= 0){
-            cost = Math.round(n);
-            break;
-          }
-        }
-        if(!name || cost === null) return;
-        if(seen[name]) return;
-        seen[name] = true;
-        list.push({ name: name, cost: cost });
-      });
-    });
-
-    if(!list.length){
-      setStatus('表格中未解析到有效数据，已载入内置默认数据。', 'err');
-      if(!pets.length) applyDefaultData();
-      return;
-    }
-    commitList(list, '已载入 ' + list.length + ' 只精灵（来自表格）。图标将从 icon/ 文件夹按精灵名自动匹配。', 'ok');
-  }
-
-  function readFromFile(file){
-    if(typeof XLSX === 'undefined'){
-      toast('解析库尚未就绪，请稍后重试');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = function(e){
-      try{
-        const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
-        applyWorkbook(wb);
-      }catch(err){
-        console.error(err);
-        setStatus('文件解析失败：' + err.message, 'err');
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  }
-
-  function waitForXLSX(timeout){
-    timeout = timeout || 9000;
-    return new Promise(function(resolve, reject){
-      const t0 = Date.now();
-      (function poll(){
-        if(typeof XLSX !== 'undefined') return resolve();
-        if(Date.now() - t0 > timeout) return reject(new Error('解析库加载超时'));
-        setTimeout(poll, 120);
-      })();
-    });
-  }
-
-  /* ================= 初始化 ================= */
-  async function init(){
-    document.getElementById('search').addEventListener('input', function(e){
-      query = e.target.value;
-      renderPool();
-    });
-
-    document.getElementById('clear').addEventListener('click', function(){
-      if(!selected.length) return;
-      selected = [];
-      refresh();
-    });
-
-    document.getElementById('random').addEventListener('click', generateRandomTeam);
-
-    document.getElementById('fileInput').addEventListener('change', function(e){
-      const f = e.target.files && e.target.files[0];
-      if(f) readFromFile(f);
-      e.target.value = '';
-    });
-
-    document.getElementById('exportBtn').addEventListener('click', exportXlsx);
-
-    const fmtSelect = document.getElementById('exportFormat');
-    const expImgBtn = document.getElementById('exportImgBtn');
-
-    function syncExportBtnLabel(){
-      expImgBtn.textContent = fmtSelect.value === 'zip'
-        ? '导出精灵池 ZIP'
-        : '导出精灵池图片';
-    }
-    fmtSelect.addEventListener('change', syncExportBtnLabel);
-    syncExportBtnLabel();
-
-    expImgBtn.addEventListener('click', function(){
-      const fmt = fmtSelect.value;
-      if(fmt === 'zip'){
-        exportPoolZip();
-      }else{
-        exportPoolImage(fmt);
-      }
-    });
-
-    modeBtn.addEventListener('click', function(){
-      setMode(mode === 'duo' ? 'solo' : 'duo');
-    });
-
-    [[0, p1Panel], [1, p2Panel]].forEach(function(item){
-      const pi = item[0];
-      const h2 = item[1].querySelector('.panel-head h2');
-      if(!h2) return;
-      h2.classList.add('editable');
-      h2.title = '点击修改玩家名称';
-      h2.addEventListener('click', function(){ openNameEditor(pi); });
-    });
-
-    initIconZoom();
-    syncFootHeight();
-
-    maxCostInput.value = maxCost;
-    maxCostDisplay.textContent = maxCost;
-
-    renderTeam();
-
-    try{
-      await waitForXLSX();
-    }catch(err){
-      setStatus('解析库加载失败，已载入内置默认精灵数据。', 'err');
-      applyDefaultData();
-      return;
+    function applySizeFlags(){
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      document.body.classList.toggle('rot-sm', vw < 700);
+      document.body.classList.toggle('rot-tiny', vh < 360);
     }
 
-    try{
-      const res = await fetch(XLSX_FILE, { cache: 'no-store' });
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      const buf = await res.arrayBuffer();
-      const wb = XLSX.read(buf, { type: 'array' });
-      applyWorkbook(wb);
-    }catch(err){
-      console.warn('自动读取失败：', err);
-      applyDefaultData();
+    function apply(){
+      document.body.classList.toggle('rotate', on);
+      btn.classList.toggle('on', on);
+      btn.textContent = on ? '退出横屏' : '手机使用';
+      applySizeFlags();
+      try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(e){}
     }
-  }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', init);
-  }else{
-    init();
-  }
+    btn.addEventListener('click', function(){
+      on = !on;
+      apply();
+    });
+
+    window.addEventListener('resize', function(){
+      if(on) applySizeFlags();
+    });
+
+    window.addEventListener('orientationchange', function(){
+      setTimeout(function(){ if(on) applySizeFlags(); }, 150);
+    });
+
+    apply();
+  })();
 
 })();
 </script>
