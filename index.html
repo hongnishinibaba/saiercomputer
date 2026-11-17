@@ -1364,7 +1364,7 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
       </div>
     </div>
     <div id="pool" class="pool-scroll"></div>
-    <div id="status" class="status">正在读取 197.xlsx …</div>
+   
   </section>
 
   <!-- 单人模式阵容 / 对战模式敌方阵容 -->
@@ -1594,8 +1594,8 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
 
   const BATTLE_STATUS = {
     dead:  { cls: 'dead',  label: '死亡' },
-    heavy: { cls: 'heavy', label: '大残' },
-    hurt:  { cls: 'hurt',  label: '受伤' }
+    heavy: { cls: 'heavy', label: '受伤' },
+    hurt:  { cls: 'hurt',  label: '大残' }
   };
 
   /* ★ 状态图标（无外圈，直接叠加在精灵图标上）
@@ -3571,14 +3571,14 @@ body.rotate.rot-tiny main.duo #p2Panel{grid-column:2;grid-row:3;}
   (async function boot(){
     let data = null;
     if(typeof XLSX !== 'undefined'){
-      setStatus('正在读取 ' + XLSX_FILE + ' …');
+     // setStatus('正在读取 ' + XLSX_FILE + ' …');
       data = await tryLoadXlsx();
     }
     if(!data){
-      setStatus('未找到 ' + XLSX_FILE + '，已载入内置默认数据（可手动选择文件）', 'ok');
+     // setStatus('未找到 ' + XLSX_FILE + '，已载入内置默认数据（可手动选择文件）', 'ok');
       data = parseTextData(DEFAULT_TEXT);
     }else{
-      setStatus('已载入 ' + data.length + ' 只精灵', 'ok');
+      //setStatus('已载入 ' + data.length + ' 只精灵', 'ok');
     }
     pets = data;
     maxCostInput.value = maxCost;
